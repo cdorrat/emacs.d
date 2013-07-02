@@ -40,7 +40,7 @@
 
 ; make emacs play nicely withthe X11 clipboard
 (setq x-select-enable-clipboard t)
-(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+;;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 
 ; make todo.txt open in org mode automatically
 (setq auto-mode-alist
@@ -59,8 +59,13 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
+(defconst user-init-dir
+  (cond ((boundp 'dotfiles-dir) dotfiles-dir) 
+	((boundp 'user-emacs-directory) user-emacs-directory)
+        ((boundp 'user-init-directory) user-init-directory)
+        (t "~/.emacs.d/")))
 
-(setq modules-path (file-name-as-directory (concat dotfiles-dir  "modules")))
+(setq modules-path (file-name-as-directory (concat user-init-dir  "modules")))
 (add-to-list 'load-path modules-path)
 
 (require 'iedit) ;; C-; search/replace

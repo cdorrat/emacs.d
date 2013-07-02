@@ -53,6 +53,7 @@
                  (nrepl-send-string-sync "(symbol (str *ns*))") :value))))
 
 (defun my-select-nrepl-buffer ()
+  (interactive)
   (if (string= (nrepl-current-repl-buffer) (buffer-name))
       (pop-to-buffer (other-buffer (current-buffer) t))      
     (switch-to-buffer-other-window (nrepl-current-repl-buffer))))
@@ -60,6 +61,7 @@
 (defun my-run-in-nrepl (str)
   "Run a string in the repl by executing it in the current buffer.
   If output in the mini-buffer is ok use nrepl-interactive-eval instead"
+  (interactive)
   (with-current-buffer (get-buffer (nrepl-current-repl-buffer))
     (goto-char (point-max))    
     (insert str)
@@ -93,6 +95,7 @@
 
 (defun my-load-debug-packages ()
   "Load some commonly used debug packages into the current namespace"
+  (interactive)
   (my-run-in-nrepl
    (format "%s"
      '(do 
@@ -148,7 +151,19 @@
 (defun my-load-default-workgroups () 
   (wg-load "~/.emacs_files/workgroups"))
 
-(global-set-key [f12] (quote my-nrepl-selector))
+(defun enable-my-clojure-keys ()
+  (local-set-key (kbd "<f12> u") 'my-load-debug-packages) ;; i
+  (local-set-key (kbd "<f12> r") 'my-select-nrepl-buffer) ;; i
+  (local-set-key (kbd "<f12> i") 'my-inspect)
+  (local-set-key (kbd "<f12> t") 'my-inspect-tree)
+  (local-set-key (kbd "<f12> g") 'my-clj-gui-diff)
+  (local-set-key (kbd "<f12> c") 'nrepl-connection-browser) ;; i
+)
+
+(add-hook 'nrepl-mode-hook 'enable-my-clojure-keys)
+(add-hook 'clojure-mode-hook 'enable-my-clojure-keys)
+
+;; (global-set-key [f12] (quote my-nrepl-selector))
 
 
 (easy-menu-define my-nrepl-mode-menu (list nrepl-interaction-mode-map  nrepl-mode-map clojure-mode-map)
