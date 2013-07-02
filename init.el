@@ -130,3 +130,5 @@
   (make-frame-on-display "10.1.1.7:0"))
 
 
+
+(require 'my-ess)
