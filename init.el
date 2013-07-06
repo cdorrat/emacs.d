@@ -134,6 +134,55 @@
 (defun frame-on-laptop ()
   (make-frame-on-display "10.1.1.7:0"))
 
-
-
 (require 'my-ess)
+
+;; ===================================================================================================
+(require 'nxml-mode)
+
+(defconst my-xml-escape-chars 
+  '(("&" "&amp;") ("<" "&lt;") (">" "&gt;")))
+
+(defun my-xml-escape (s)
+  (let ((result s))    
+    (dolist (kv my-xml-escape-chars)
+      (setq result (replace-regexp-in-string (car kv) (second kv) result)))
+    result))
+
+(defun my-xml-unescape (s)
+  (let ((result s))    
+    (dolist (kv my-xml-escape-chars)
+      (setq result (replace-regexp-in-string (second kv) (car kv) result)))
+    result))
+		
+(defun my-xml-escape-paste ()
+  "insert the contents of the clipboard escaping html characters"
+  (interactive)
+  (save-excursion
+    (insert (my-xml-escape (current-kill 0 1)))))
+
+(defun my-xml-escape-region ()
+  "kills the current region & replaces it with an x/html escaped version, the previous text is saved in the kill ring.
+  if no region is selected it defaults to the current nxml p (see with M-h)"
+  (interactive)
+  (when (not (region-active-p))
+    (nxml-mark-paragraph))
+  (let ((start (region-beginning))
+	(end (region-end)))                 
+    (kill-region start end)
+    (goto-char start)
+    (insert (my-xml-escape (current-kill 0 1)))))
+
+  
+(defun region-test (start end)
+  (interactive "r")
+  (message (number-to-string start)))
+
+;; nxml doesnt have a mode hook so we'll add the binding directly to it's keymap
+(define-key nxml-mode-map (kbd "C-y") 'yank)
+(define-key nxml-mode-map (kbd "M-C-y") 'my-xml-escape-paste)
+
+
+;; ===================================================================================================
+(require 'anki)
+
+(global-set-key (kbd "<f12> a") 'anki-add-fact) 
