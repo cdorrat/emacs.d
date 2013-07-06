@@ -56,7 +56,7 @@
      (format "  <card> 
     <front><![CDATA[%s]]></front>
     <back><![CDATA[%s]]></back>
-    <code language=\"%s\"><![CDATA[%s]]></code>
+    <code class=\"code\" language=\"%s\"><![CDATA[%s]]></code>
   </card>\n"
 	     (gethash :front card-vals)
 	     (gethash :back card-vals)
