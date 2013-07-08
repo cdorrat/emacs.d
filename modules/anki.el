@@ -20,9 +20,19 @@
   nil ;; The initial value.      
   " Anki" ;; The indicator for the mode line.  
   '(("\C-\o" . anki-save-card) ;; The minor mode bindings.
+    ("\M-\w" . anki-export-cards)
     ("\C-\q" . (lambda () 
 		 (interactive) 
 		 (kill-buffer (current-buffer))))) 
+  :group 'anki )
+
+(define-minor-mode anki-export-mode
+  "A minor mode for displayign the results of an anki export"      
+  nil ;; The initial value.      
+  " Anki" ;; The indicator for the mode line.  
+  '(("q" . (lambda () 
+	     (interactive)
+	     (kill-buffer (current-buffer)))))
   :group 'anki )
 
 (provide 'anki)
@@ -33,6 +43,25 @@
   (require 'wid-edit))
 
 (defvar anki-card-vals )
+
+(defun anki-export-cards ()
+  (interactive)
+  (with-current-buffer (get-buffer-create "*Anki Export*")
+    (erase-buffer)    
+    (goto-char 0)
+    (insert "exporting anki cards with external program ...\n")
+    (start-process "anki-export"
+		 (current-buffer)
+		 "java"
+		 "-jar"
+		 "/home/cnd/src/clojure/anki_cards/target/anki_cards-0.1.0-SNAPSHOT-standalone.jar"
+		 "-i" 
+		 (file-truename anki-cards-file))
+    (read-only-mode)
+    (anki-export-mode))
+  (switch-to-buffer "*Anki Export*")
+  (message "anki card export started"))
+
 
 (defun anki--init-cards-file (filename)
  (with-temp-buffer 
@@ -48,6 +77,11 @@
      (set-buffer (find-file-noselect anki-cards-file))
      (rename-buffer "*Anki Cards*"))))
 
+(defun anki-cards-buffer ()
+  "Switch to the buffer with the anki cards data"
+  (interactive)
+  (switch-to-buffer (anki--get-cards-buffer)))
+
 (defun anki--save-card (card-vals)
   (with-current-buffer (anki--get-cards-buffer)
     (goto-char (point-max))
@@ -58,11 +92,12 @@
     <back><![CDATA[%s]]></back>
     <code class=\"code\" language=\"%s\"><![CDATA[%s]]></code>
   </card>\n"
-	     (gethash :front card-vals)
-	     (gethash :back card-vals)
-	     (gethash :language card-vals) 
-	     (gethash :code card-vals)))
+	     (gethash :front card-vals "")
+	     (gethash :back card-vals "")
+	     (gethash :language card-vals "") 
+	     (gethash :code card-vals "")))
     (save-buffer)))
+
 
 (defun anki-save-card () 
   "Save the current fact to the anki cards file"
@@ -74,7 +109,9 @@
 (defun anki-add-fact ()
   "Create the widgets from the Widget manual."
   (interactive)
-  (switch-to-buffer "*Anki Fact*")
+
+  ;; Bug - need to switch to an existing window if ones visible, otherwise create a new one
+  (switch-to-buffer (get-buffer-create "*Anki Fact*"))
 
   (kill-all-local-variables)
   (make-local-variable 'anki-card-vals)
@@ -130,10 +167,9 @@
   (widget-insert " ")
   (widget-create 'push-button
 		 :notify (lambda (&rest ignore)
-			   (anki--save-card anki-card-vals)
-			   (kill-buffer (current-buffer)))
+			   (anki-export-cards))
 		 :tab-order 5
-		 "Save & Quit")
+		 "Export Cards")
 
   (widget-insert " ")
   (widget-create 'push-button
