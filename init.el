@@ -1,4 +1,5 @@
 (set-face-attribute 'default nil :height 120)
+;; "Essential PragmataPro" -> default face?
 
 (mouse-wheel-mode t)
 (global-set-key [mouse-4] 'scroll-down)
@@ -51,8 +52,6 @@
      ("todo\\.txt\\'" . org-mode))
    auto-mode-alist))
 
-
-
 (require 'tramp)
 
 (require 'package)
@@ -100,14 +99,28 @@
 ;; Configure nrepl.el
 (require 'my-clojure)
 
+;; =================================================================================================== 
+;; auto completion
+(setq tab-always-indent 'complete)
+(add-to-list 'completion-styles 'initials t)
+
+(setq ido-enable-flex-matching t)
+(ido-mode 1)
+(ido-everywhere 1)
+
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
+(ac-config-default)
+
+
 ;;===================================================================================================
 ;; yasnippet setup
-(require 'yasnippet)
-(yas/global-mode 1)
+;; (require 'yasnippet)
+;; (yas/global-mode 1)
 
-(setq dotfiles-dir (file-name-directory (or load-file-name (buffer-file-name))))
+;; (setq dotfiles-dir (file-name-directory (or load-file-name (buffer-file-name))))
 
-(yas/load-directory (expand-file-name "snippets" dotfiles-dir))
+;; (yas/load-directory (expand-file-name "snippets" dotfiles-dir))
 
 ;; yasnippet and org-mode don't play well together when using TAB for completion. This should fix it:
 
@@ -124,13 +137,6 @@
 ;;===================================================================================================
 
   
-(setq tab-always-indent 'complete)
-(add-to-list 'completion-styles 'initials t)
-
-(setq ido-enable-flex-matching t)
-(ido-mode 1)
-(ido-everywhere 1)
-
 (defun frame-on-laptop ()
   (make-frame-on-display "10.1.1.7:0"))
 

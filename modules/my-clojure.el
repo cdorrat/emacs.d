@@ -7,22 +7,42 @@
  
 ;; Some default eldoc facilities
 (add-hook 'nrepl-connected-hook
-(defun pnh-clojure-mode-eldoc-hook ()
-(add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
-(nrepl-enable-on-existing-clojure-buffers)))
+	  (defun pnh-clojure-mode-eldoc-hook ()
+	    (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
+	    (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
+	    (nrepl-enable-on-existing-clojure-buffers)))
  
 ;; Repl mode hook
 (add-hook 'nrepl-mode-hook 'subword-mode)
  
-;; Auto completion for NREPL
-(require 'ac-nrepl)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'nrepl-mode))
-(add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
 
 (load-file "~/.emacs.d/nrepl-inspect/nrepl-inspect.el")
 (define-key nrepl-mode-map (kbd "C-c C-i") 'nrepl-inspect)
+
+;; ;; Auto completion for NREPL
+(load (concat user-init-dir "ac-nrepl-compliment/ac-nrepl-compliment.el"))
+(require 'ac-nrepl-compliment)
+(add-hook 'nrepl-mode-hook 'ac-nrepl-compliment-setup)
+(add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-compliment-setup)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'nrepl-mode))
+
+(defun set-auto-complete-as-completion-at-point-function ()
+  (setq completion-at-point-functions '(auto-complete)))
+
+(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'nrepl-interaction-mode-hook 'set-auto-complete-as-completion-at-point-function)
+
+(define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-compliment-popup-doc) 
+
+;; (require 'ac-nrepl)
+;; (eval-after-load "auto-complete"
+;;   '(add-to-list 'ac-modes 'nrepl-mode))
+;; (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+
+
+
 
 (require 'slamhound)
 ;; seems to be a bug inthe current elpa version 20121227.1032, 
@@ -114,6 +134,16 @@
                                  (gui.diff/p-str %s) 
                                  (gui.diff/p-str %s)))" a b)))
 
+(defun my-start-pedestal ()
+  (interactive)
+  (my-run-in-nrepl
+   (format "%s"
+	   '(do 
+		(use 'dev)
+		(start)
+	      (watch :development)))))
+  
+
 (defun my-toggle-spyscope-at-point ()
   ;; TODO:
   ;; toggle spycope reader macros for the current form
@@ -152,13 +182,17 @@
   (wg-load "~/.emacs_files/workgroups"))
 
 (defun enable-my-clojure-keys ()
-  (local-set-key (kbd "<f12> u") 'my-load-debug-packages) ;; i
-  (local-set-key (kbd "<f12> r") 'my-select-nrepl-buffer) ;; i
+  (local-set-key (kbd "<f12> u") 'my-load-debug-packages) 
+  (local-set-key (kbd "<f12> r") 'my-select-nrepl-buffer) 
   (local-set-key (kbd "<f12> i") 'my-inspect)
   (local-set-key (kbd "<f12> t") 'my-inspect-tree)
   (local-set-key (kbd "<f12> g") 'my-clj-gui-diff)
-  (local-set-key (kbd "<f12> c") 'nrepl-connection-browser) ;; i
+  (local-set-key (kbd "<f12> c") 'nrepl-connection-browser)
+  (local-set-key (kbd "<f12> p") 'my-start-pedestal)
+
+  (local-set-key (kbd "M-h") 'mark-sexp)
 )
+
 
 (add-hook 'nrepl-mode-hook 'enable-my-clojure-keys)
 (add-hook 'clojure-mode-hook 'enable-my-clojure-keys)
