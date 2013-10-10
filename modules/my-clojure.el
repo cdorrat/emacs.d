@@ -1,7 +1,7 @@
 ;; clojure mode settings
 
 (require 'nrepl)
-(setq nrepl-hide-special-buffers t)
+;;(setq nrepl-hide-special-buffers t) 
 (setq nrepl-popup-stacktraces-in-repl t)
 (setq nrepl-history-file "~/.emacs.d/nrepl-history")
  
@@ -33,8 +33,10 @@
 (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
 (add-hook 'nrepl-mode-hook 'set-auto-complete-as-completion-at-point-function)
 (add-hook 'nrepl-interaction-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'nrepl-connected-hook (lambda ()  (nrepl-interactive-eval "(require 'compliment.core)")))
 
-(define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-compliment-popup-doc) 
+
+;;(define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-compliment-popup-doc) 
 
 ;; (require 'ac-nrepl)
 ;; (eval-after-load "auto-complete"
@@ -72,6 +74,7 @@
   (lambda () (nrepl-set-ns (plist-get
                  (nrepl-send-string-sync "(symbol (str *ns*))") :value))))
 
+  
 (defun my-select-nrepl-buffer ()
   (interactive)
   (if (string= (nrepl-current-repl-buffer) (buffer-name))
@@ -142,6 +145,8 @@
 		(use 'dev)
 		(start)
 	      (watch :development)))))
+
+
   
 
 (defun my-toggle-spyscope-at-point ()
@@ -175,13 +180,14 @@
    ((= c ?t) (call-interactively 'my-inspect-tree))
    ((= c ?g) (call-interactively 'my-clj-gui-diff))
    ((= c ?c) (nrepl-connection-browser))
-   (t (message "unrecognised option: " c)))
+   (t (message (concat "unrecognised option: " c))))
 )
 
 (defun my-load-default-workgroups () 
   (wg-load "~/.emacs_files/workgroups"))
 
 (defun enable-my-clojure-keys ()
+  (interactive)
   (local-set-key (kbd "<f12> u") 'my-load-debug-packages) 
   (local-set-key (kbd "<f12> r") 'my-select-nrepl-buffer) 
   (local-set-key (kbd "<f12> i") 'my-inspect)
