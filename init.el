@@ -10,7 +10,7 @@
  '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Essential PragmataPro")))))
 
 (mouse-wheel-mode t)
-(global-set-key [mouse-4] 'scroll-down)
+(global-set-key [mouse-4 'scroll-down])
 (global-set-key [mouse-5] 'scroll-up)
 (global-set-key (quote [201326632]) 'scroll-down)
 (global-set-key (quote [201326633]) 'scroll-up)
@@ -64,6 +64,7 @@
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
 (defconst user-init-dir
@@ -104,10 +105,6 @@
   (wg-load wg-default-session-file))
 
 ;; =================================================================================================== 
-;; Configure nrepl.el
-(require 'my-clojure)
-
-;; =================================================================================================== 
 ;; auto completion
 (setq tab-always-indent 'complete)
 (add-to-list 'completion-styles 'initials t)
@@ -119,6 +116,13 @@
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
 (ac-config-default)
+(ac-flyspell-workaround)
+
+;; =================================================================================================== 
+;; Configure clojure
+(require 'my-clojure)
+(require 'setup-paredit)
+(require 'paredit-menu)
 
 
 ;;===================================================================================================
@@ -146,7 +150,8 @@
 
   
 (defun frame-on-laptop ()
-  (make-frame-on-display "10.1.1.7:0"))
+  (interactive)
+  (make-frame-on-display "10.1.1.9:0"))
 
 (require 'my-ess)
 
@@ -200,4 +205,21 @@
 (require 'anki)
 
 (global-set-key (kbd "<f12> a") 'anki-add-fact) 
+
+(require 'itail)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(itail-highlight-list (quote (("\\b(ERROR|WARN|FATAL)\\b.*$" . hi-red-b) ("\\bINFO\\b" . link) ("^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\},[0-9]\\{3\\} " . font-lock-string-face)))))
+
+;; ===================================================================================================
+;; jump-char
+(require 'ace-jump-mode)
+(require 'jump-char)
+
+(global-set-key [(meta m)] 'jump-char-forward)
+(global-set-key [(shift meta m)] 'jump-char-backward)
+(global-set-key [(control c) space] 'ace-jump-mode)
 
