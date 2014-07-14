@@ -212,7 +212,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(itail-highlight-list (quote (("\\b(ERROR|WARN|FATAL)\\b.*$" . hi-red-b) ("\\bINFO\\b" . link) ("^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\},[0-9]\\{3\\} " . font-lock-string-face)))))
+ '(itail-highlight-list (quote (("\\b(ERROR|WARN|FATAL)\\b.*$" . hi-red-b)
+				("\\bINFO\\b" . link)
+				("^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\},[0-9]\\{3\\} " . font-lock-string-face)))))
 
 ;; ===================================================================================================
 ;; jump-char
@@ -221,5 +223,5 @@
 
 (global-set-key [(meta m)] 'jump-char-forward)
 (global-set-key [(shift meta m)] 'jump-char-backward)
-(global-set-key [(control c) space] 'ace-jump-mode)
+(global-set-key [(control 0)] 'ace-jump-mode)
 
