@@ -10,7 +10,7 @@
  '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Essential PragmataPro")))))
 
 (mouse-wheel-mode t)
-(global-set-key [mouse-4 'scroll-down])
+(global-set-key [mouse-4] 'scroll-down)
 (global-set-key [mouse-5] 'scroll-up)
 (global-set-key (quote [201326632]) 'scroll-down)
 (global-set-key (quote [201326633]) 'scroll-up)
@@ -218,10 +218,15 @@
 
 ;; ===================================================================================================
 ;; jump-char
+
+(require 'fast-load)
+(global-set-key [(f8)] 'xah-open-file-fast)
+
+
 (require 'ace-jump-mode)
 (require 'jump-char)
 
 (global-set-key [(meta m)] 'jump-char-forward)
 (global-set-key [(shift meta m)] 'jump-char-backward)
-(global-set-key [(control 0)] 'ace-jump-mode)
-
+(global-set-key [67108912] 'ace-jump-mode) ;; Ctrl-0
+(global-unset-key "")
