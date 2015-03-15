@@ -156,7 +156,11 @@
 		 :help-echo "Langauge used for syntax highlighting"
 		 '(choice-item "R")
 		 '(choice-item "Clojure")
+		 '(choice-item "Lisp")
+;;		 '(editable-field :menu-tag "R" "Clojure")
 		 )
+ 
+
 
   (widget-create 'push-button
 		 :notify (lambda (&rest ignore)			   
