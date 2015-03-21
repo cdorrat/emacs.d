@@ -4,7 +4,21 @@
 ;;(setq cider-hide-special-buffers t) 
 (setq cider-popup-stacktraces-in-repl t)
 (setq cider-repl-history-file "~/.emacs.d/nrepl-history")
- 
+
+
+;(add-hook 'cider-repl-mode-hook #'company-mode)
+;(add-hook 'cider-mode-hook #'company-mode)
+(require 'ac-cider)
+(add-hook 'cider-mode-hook 'ac-flyspell-workaround)
+(add-hook 'cider-mode-hook 'ac-cider-setup)
+(add-hook 'cider-repl-mode-hook 'ac-cider-setup)
+(eval-after-load "auto-complete"
+  '(progn
+     (add-to-list 'ac-modes 'cider-mode)
+     (add-to-list 'ac-modes 'cider-repl-mode)))
+
+(add-hook 'cider-mode-hook 'subword-mode)
+
 ;; Some default eldoc facilities
 (add-hook 'cider-connected-hook
 	  (defun pnh-clojure-mode-eldoc-hook ()
@@ -12,7 +26,6 @@
 	    (add-hook 'cider-repl-mode-hook 'cider-turn-on-eldoc-mode)
 	    (cider-enable-on-existing-clojure-buffers)))
  
-(add-hook 'cider-mode-hook 'subword-mode)
 
 ;; Auto completion for NREPL
 ;; (load (concat user-init-dir "ac-nrepl-compliment/ac-cider-compliment.el"))
@@ -215,6 +228,8 @@
   (local-set-key (kbd "<f12> g") 'my-clj-gui-diff)
   (local-set-key (kbd "<f12> c") 'nrepl-connection-browser)
   (local-set-key (kbd "<f12> p") 'my-start-pedestal)
+  (local-set-key (kbd "C-c M-t") 'cider-toggle-trace-var)
+
 
   (local-set-key (kbd "M-h") 'mark-sexp)
 )

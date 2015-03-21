@@ -1,6 +1,8 @@
+(setq debug-on-error t)
 (set-face-attribute 'default nil :height 120)
 ;; "Essential PragmataPro" -> default face?
 ;; "Droid Sans Mono"
+
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -63,8 +65,10 @@
 (require 'tramp)
 
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
 (package-initialize)
 
 (defconst user-init-dir
@@ -113,6 +117,9 @@
 (ido-mode 1)
 (ido-everywhere 1)
 
+;; (require 'company)
+;; (global-company-mode)
+
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
 (ac-config-default)
@@ -124,6 +131,21 @@
 (require 'setup-paredit)
 (require 'paredit-menu)
 
+
+;; ===================================================================================================
+;; jump-char
+
+(require 'fast-load)
+(global-set-key [(f8)] 'xah-open-file-fast)
+
+
+(require 'ace-jump-mode)
+(require 'jump-char)
+
+(global-set-key [(meta m)] 'jump-char-forward)
+(global-set-key [(shift meta m)] 'jump-char-backward)
+(global-set-key [67108912] 'ace-jump-mode) ;; Ctrl-0
+(global-unset-key "")
 
 ;;===================================================================================================
 ;; yasnippet setup
@@ -212,21 +234,30 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(itail-highlight-list (quote (("\\b(ERROR|WARN|FATAL)\\b.*$" . hi-red-b)
-				("\\bINFO\\b" . link)
-				("^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\},[0-9]\\{3\\} " . font-lock-string-face)))))
+ '(itail-highlight-list
+   (quote
+    (("\\b(ERROR|WARN|FATAL)\\b.*$" . hi-red-b)
+     ("\\bINFO\\b" . link)
+     ("^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\},[0-9]\\{3\\} " . font-lock-string-face))))
+ '(package-selected-packages
+   (quote
+    (multiple-cursors fuzzy company ac-cider cider yasnippet workgroups troncle s rainbow-delimiters queue pkg-info paredit-menu paredit markdown-mode jump-char iy-go-to-char itail iedit helm fringe-helper fiplr ess-R-object-popup ess-R-data-view dash command-log-mode clojure-mode auto-complete arduino-mode ace-jump-mode 2048-game))))
+
 
 ;; ===================================================================================================
-;; jump-char
+(require 'multiple-cursors)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
-(require 'fast-load)
-(global-set-key [(f8)] 'xah-open-file-fast)
+(defun eval-and-replace ()
+  "Replace the preceding sexp with its value."
+  (interactive)
+  (backward-kill-sexp)
+  (condition-case nil
+      (prin1 (eval (read (current-kill 0)))
+	     (current-buffer))
+    (error (message "Invalid expression")
+	   (insert (current-kill 0)))))
 
 
-(require 'ace-jump-mode)
-(require 'jump-char)
-
-(global-set-key [(meta m)] 'jump-char-forward)
-(global-set-key [(shift meta m)] 'jump-char-backward)
-(global-set-key [67108912] 'ace-jump-mode) ;; Ctrl-0
-(global-unset-key "")
