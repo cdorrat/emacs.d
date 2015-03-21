@@ -5,9 +5,6 @@
 (setq cider-popup-stacktraces-in-repl t)
 (setq cider-repl-history-file "~/.emacs.d/nrepl-history")
 
-
-;(add-hook 'cider-repl-mode-hook #'company-mode)
-;(add-hook 'cider-mode-hook #'company-mode)
 (require 'ac-cider)
 (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
 (add-hook 'cider-mode-hook 'ac-cider-setup)
@@ -26,30 +23,6 @@
 	    (add-hook 'cider-repl-mode-hook 'cider-turn-on-eldoc-mode)
 	    (cider-enable-on-existing-clojure-buffers)))
  
-
-;; Auto completion for NREPL
-;; (load (concat user-init-dir "ac-nrepl-compliment/ac-cider-compliment.el"))
-;; (require 'ac-cider-compliment)
-;; (add-hook 'cider-mode-hook 'ac-cider-compliment-setup)
-;; (add-hook 'cider-repl-mode-hook 'ac-cider-compliment-repl-setup)
-;; (add-to-list 'ac-modes 'cider-mode)
-;; (add-to-list 'ac-modes 'cider-repl-mode)
-
-
-;; (require 'ac-cider-compliment)
-;; (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
-;; (add-hook 'cider-mode-hook 'ac-cider-compliment-setup)
-;; (eval-after-load "auto-complete"
-;;   '(add-to-list 'ac-modes 'cider-mode))
-
-;; (defun set-auto-complete-as-completion-at-point-function ()
-;;   (setq completion-at-point-functions '(auto-complete)))
-;; (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
-
-;; (add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
-
-
-
 ;;(require 'slamhound)
 ;; seems to be a bug inthe current elpa version 20121227.1032, 
 ;; it looks for a non-nil value of nrepl-current-connection-buffer to see if it should use nrepl or slime

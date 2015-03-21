@@ -1,25 +1,13 @@
-(setq debug-on-error t)
-(set-face-attribute 'default nil :height 120)
+;; (set-face-attribute 'default nil :height 120)
 ;; "Essential PragmataPro" -> default face?
 ;; "Droid Sans Mono"
 
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Essential PragmataPro")))))
-
-(mouse-wheel-mode t)
-(global-set-key [mouse-4] 'scroll-down)
-(global-set-key [mouse-5] 'scroll-up)
-(global-set-key (quote [201326632]) 'scroll-down)
-(global-set-key (quote [201326633]) 'scroll-up)
-
-(global-set-key "" (quote call-last-kbd-macro))
-(global-set-key (quote [f9]) 'magit-status)
-
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Essential PragmataPro")))))
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
@@ -35,6 +23,7 @@
 
 (recentf-mode 1)
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
+
 
 ;; Create backup files in .emacs-backup instead of everywhere
 (defvar user-temporary-file-directory "~/.emacs-backup")
@@ -62,14 +51,49 @@
      ("todo\\.txt\\'" . org-mode))
    auto-mode-alist))
 
-(require 'tramp)
 
+(defvar cdorrat/packages '(
+			  ac-cider
+			  cl
+			  command-log-mode
+			  magit
+			  markdown-mode
+			  multiple-cursors
+                          ace-jump-mode
+                          cider
+                          dash
+                          ess
+                          fiplr
+                          iedit
+                          itail
+                          jump-char
+                          nxml
+                          package
+                          paredit
+                          paredit-menu
+                          s
+                          tramp
+                          workgroups))
+
+(require 'cl)
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
 (package-initialize)
+
+(defun cdorrat/packages-installed-p ()
+  (loop for pkg in cdorrat/packages
+        when (not (package-installed-p pkg)) do (return nil)
+        finally (return t)))
+
+(unless (cdorrat/packages-installed-p)
+  (message "%s" "Refreshing package database...")
+  (package-refresh-contents)
+  (dolist (pkg cdorrat/packages)
+    (when (not (package-installed-p pkg))
+      (package-install pkg))))
 
 (defconst user-init-dir
   (cond ((boundp 'dotfiles-dir) dotfiles-dir) 
@@ -80,6 +104,7 @@
 (setq modules-path (file-name-as-directory (concat user-init-dir  "modules")))
 (add-to-list 'load-path modules-path)
 
+(require 'tramp)
 (require 'iedit) ;; C-; search/replace
 
 (require 'fiplr) ;; find files in project
@@ -234,14 +259,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(itail-highlight-list
-   (quote
-    (("\\b(ERROR|WARN|FATAL)\\b.*$" . hi-red-b)
-     ("\\bINFO\\b" . link)
-     ("^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\},[0-9]\\{3\\} " . font-lock-string-face))))
  '(package-selected-packages
    (quote
-    (multiple-cursors fuzzy company ac-cider cider yasnippet workgroups troncle s rainbow-delimiters queue pkg-info paredit-menu paredit markdown-mode jump-char iy-go-to-char itail iedit helm fringe-helper fiplr ess-R-object-popup ess-R-data-view dash command-log-mode clojure-mode auto-complete arduino-mode ace-jump-mode 2048-game))))
+    (magit yasnippet workgroups troncle s rainbow-delimiters paredit-menu paredit multiple-cursors markdown-mode jump-char iy-go-to-char itail iedit helm fuzzy fringe-helper fiplr ess ctable company command-log-mode arduino-mode ace-jump-mode ac-cider 2048-game))))
 
 
 ;; ===================================================================================================
@@ -261,3 +281,37 @@
 	   (insert (current-kill 0)))))
 
 
+;; ===================================================================================================
+;; Custom key bindings
+(mouse-wheel-mode t)
+(global-set-key [mouse-4] 'scroll-down)
+(global-set-key [mouse-5] 'scroll-up)
+(global-set-key (quote [201326632]) 'scroll-down)
+(global-set-key (quote [201326633]) 'scroll-up)
+(global-set-key "" (quote call-last-kbd-macro))
+(global-set-key (quote [f9]) 'magit-status)
+(global-set-key [(meta m)] 'jump-char-forward)
+(global-set-key [(shift meta m)] 'jump-char-backward)
+(global-set-key [67108912] 'ace-jump-mode) ;; Ctrl-0
+(global-unset-key "")
+
+;; ===================================================================================================
+
+;; setup pairning env
+(defun ss-setup ()
+  (interactive)
+  (load-theme 'wombat)
+  (auto-revert-mode)
+  
+  ;; show which emacs commands are being used
+  (require 'command-log-mode)
+  (add-hook 'cider-mode-hook 'command-log-mode)
+  (add-hook 'clojure-mode-hook 'command-log-mode)
+
+  (if (functionp 'window-system)
+      (when (and (window-system)
+		 (>= emacs-major-version 24))
+	(server-start))))
+
+
+;;(ss-setup)
