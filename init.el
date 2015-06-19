@@ -61,6 +61,7 @@
 			  multiple-cursors
                           ace-jump-mode
                           cider
+			  clj-refactor
                           dash
                           ess
                           fiplr
@@ -314,4 +315,4 @@
 	(server-start))))
 
 
-;;(ss-setup)
+(ss-setup)
