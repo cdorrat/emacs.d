@@ -55,13 +55,15 @@
 (defvar cdorrat/packages '(
 			  ac-cider
 			  cl
+			  clj-refactor
 			  command-log-mode
+			  helm-projectile
 			  magit
 			  markdown-mode
 			  multiple-cursors
+			  projectile
                           ace-jump-mode
                           cider
-			  clj-refactor
                           dash
                           ess
                           fiplr
@@ -316,3 +318,11 @@
 
 
 (ss-setup)
+
+
+;; ===================================================================================================
+(require 'projectile)
+(require 'helm-projectile)
+(projectile-global-mode)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
