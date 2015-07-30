@@ -326,3 +326,22 @@
 (projectile-global-mode)
 (setq projectile-completion-system 'helm)
 (helm-projectile-on)
+
+
+;;
+(require 'hydra)
+(defhydra hydra-window (global-map "C-x w")
+  "manipulate windows"
+  ("0" delete-window)
+  ("1" delete-other-windows)
+  ("2" split-window-below)
+  ("3" split-window-right)
+  ("n" other-window)
+  ("C-<up>" shrink-window)
+  ("C-<down>" enlarge-window)
+  ("C-<left>" shrink-window-horizontally)
+  ("C-<right>" enlarge-window-horizontally)
+  ("=" balance-windows)
+  ("b" helm-projectile-switch-to-buffer)
+  ("f" helm-projectile-find-file)
+  ("q" nil :exit true))
