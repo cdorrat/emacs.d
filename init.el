@@ -329,6 +329,15 @@
 
 
 ;;
+(defun rotate-windows-helper(x d)
+  (if (equal (cdr x) nil) (set-window-buffer (car x) d)
+    (set-window-buffer (car x) (window-buffer (cadr x))) (rotate-windows-helper (cdr x) d)))
+ 
+(defun rotate-windows ()
+  (interactive)
+  (rotate-windows-helper (window-list) (window-buffer (car (window-list))))
+  (select-window (car (last (window-list)))))
+
 (require 'hydra)
 (defhydra hydra-window (global-map "C-x w")
   "manipulate windows"
@@ -341,7 +350,18 @@
   ("C-<down>" enlarge-window)
   ("C-<left>" shrink-window-horizontally)
   ("C-<right>" enlarge-window-horizontally)
+  ("<up>" windmove-up)
+  ("<down>" windmove-down)
+  ("<left>" windmove-left)
+  ("<right>" windmove-right)
+  ("C-n" windmove-down)
+  ("C-p" windmove-up)
+  ("C-f" windmove-right)
+  ("C-b" windmove-left) 
   ("=" balance-windows)
-  ("b" helm-projectile-switch-to-buffer)
-  ("f" helm-projectile-find-file)
-  ("q" nil :exit true))
+  ("r" rotate-windows)
+  ("B" helm-projectile-switch-to-buffer)
+  ("b" ido-switch-buffer)
+  ("F" helm-projectile-find-file)
+  ("f" ido-find-file)
+  ("q" nil :exit truex))
