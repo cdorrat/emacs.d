@@ -338,8 +338,13 @@
   (rotate-windows-helper (window-list) (window-buffer (car (window-list))))
   (select-window (car (last (window-list)))))
 
+(require 'key-chord)
+(key-chord-mode 1)
+
 (require 'hydra)
-(defhydra hydra-window (global-map "C-x w")
+(key-chord-define-global
+ "ww"
+(defhydra hydra-window  () ;; (global-map "C-x w")
   "manipulate windows"
   ("0" delete-window)
   ("1" delete-other-windows)
@@ -364,4 +369,4 @@
   ("b" ido-switch-buffer)
   ("F" helm-projectile-find-file)
   ("f" ido-find-file)
-  ("q" nil :exit truex))
+  ("q" nil :exit true)))
