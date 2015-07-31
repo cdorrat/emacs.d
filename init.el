@@ -58,6 +58,8 @@
 			  clj-refactor
 			  command-log-mode
 			  helm-projectile
+			  hydra
+			  key-chord
 			  magit
 			  markdown-mode
 			  multiple-cursors
