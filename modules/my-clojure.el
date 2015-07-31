@@ -185,6 +185,25 @@
   c - nrepl connection browser
   ? - show this help"))
 
+(defun my-figwheel-repl ()
+  (interactive)
+  (cider-connect "localhost" 7888)  
+  (my-run-in-nrepl
+   (format "%s"
+	   '(do 
+		(require '[figwheel-sidecar.repl-api :refer :all])
+		(cljs-repl)))))
+
+
+(defun my-weasel-connect ()
+  (interactive)
+  (my-run-in-nrepl
+   "(do 
+     (require '[weasel.repl.websocket])
+     (cemerick.piggieback/cljs-repl
+       (weasel.repl.websocket/repl-env :ip \"0.0.0.0\" :port 9001)))"))
+
+
 ;; I should convert these to a keymap on clojure/nrepl modes 
 (defun my-nrepl-selector (c)
   "Quick launch for a set of clojure/nRepl development tasks"
@@ -199,6 +218,8 @@
    (t (message (concat "unrecognised option: " c))))
 )
 
+
+
 (defun my-load-default-workgroups () 
   (wg-load "~/.emacs_files/workgroups"))
 
@@ -210,7 +231,7 @@
   (local-set-key (kbd "<f12> t") 'my-inspect-tree)
   (local-set-key (kbd "<f12> g") 'my-clj-gui-diff)
   (local-set-key (kbd "<f12> c") 'nrepl-connection-browser)
-  (local-set-key (kbd "<f12> p") 'my-start-pedestal)
+  (local-set-key (kbd "<f12> f") 'my-figwheel-repl)
   (local-set-key (kbd "C-c M-t") 'cider-toggle-trace-var)
 
 
