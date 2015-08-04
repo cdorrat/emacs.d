@@ -69,6 +69,8 @@
                           dash
                           ess
                           fiplr
+			  fixmee
+			  git-gutter-fringe
                           iedit
                           itail
                           jump-char
@@ -343,32 +345,183 @@
 (require 'key-chord)
 (key-chord-mode 1)
 
+(require 'fixmee)
+;(global-fixmee-mode 1)
+
 (require 'hydra)
 (key-chord-define-global
  "ww"
-(defhydra hydra-window  () ;; (global-map "C-x w")
-  "manipulate windows"
-  ("0" delete-window)
-  ("1" delete-other-windows)
-  ("2" split-window-below)
-  ("3" split-window-right)
-  ("n" other-window)
-  ("C-<up>" shrink-window)
-  ("C-<down>" enlarge-window)
-  ("C-<left>" shrink-window-horizontally)
-  ("C-<right>" enlarge-window-horizontally)
-  ("<up>" windmove-up)
-  ("<down>" windmove-down)
-  ("<left>" windmove-left)
-  ("<right>" windmove-right)
-  ("C-n" windmove-down)
-  ("C-p" windmove-up)
-  ("C-f" windmove-right)
-  ("C-b" windmove-left) 
-  ("=" balance-windows)
-  ("r" rotate-windows)
-  ("B" helm-projectile-switch-to-buffer)
-  ("b" ido-switch-buffer)
-  ("F" helm-projectile-find-file)
-  ("f" ido-find-file)
-  ("q" nil :exit true)))
+ (defhydra hydra-window  (global-map "C-x w")
+   "manipulate windows"
+   ("0" delete-window)
+   ("1" delete-other-windows)
+   ("2" split-window-below)
+   ("3" split-window-right)
+   ("n" other-window)
+   ("C-<up>" shrink-window)
+   ("C-<down>" enlarge-window)
+   ("C-<left>" shrink-window-horizontally)
+   ("C-<right>" enlarge-window-horizontally)
+   ("<up>" windmove-up)
+   ("<down>" windmove-down)
+   ("<left>" windmove-left)
+   ("<right>" windmove-right)
+   ("C-n" windmove-down)
+   ("C-p" windmove-up)
+   ("C-f" windmove-right)
+   ("C-b" windmove-left) 
+   ("=" balance-windows)
+   ("r" rotate-windows)
+   ("B" helm-projectile-switch-to-buffer)
+   ("b" ido-switch-buffer)
+   ("F" helm-projectile-find-file)
+   ("f" ido-find-file)
+   ("q" nil :exit true)))
+
+ (defhydra hydra-projectile (:color blue :hint nil :idle 0)
+   "
+                                                                                                                          ╭────────────┐                   ╭────────┐
+   Files             Search          Buffer             Do                Other Window      Run             Cache         │ Projectile │    Do             │ Fixmee │
+ ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────╯  ╭────────────────┴────────╯
+   [_f_] file          [_a_] ag          [_b_] switch         [_g_] magit         [_F_] file          [_U_] test        [_kc_] clear         [_x_] TODO & FIXME
+   [_l_] file dwim     [_A_] grep        [_v_] show all       [_p_] commander     [_L_] dwim          [_m_] compile     [_kk_] add current   [_X_] toggle
+   [_r_] recent file   [_s_] occur       [_V_] ibuffer        [_i_] info          [_D_] dir           [_c_] shell       [_ks_] cleanup
+   [_d_] dir           [_S_] replace     [_K_] kill all        ^ ^                [_O_] other         [_C_] command     [_kd_] remove
+    ^ ^                 ^ ^               ^ ^                  ^ ^                [_B_] buffer
+   [_P_] Switch Project
+  --------------------------------------------------------------------------------
+        "
+   ("<tab>" hydra-master/body "back")
+   ("<ESC>" nil "quit")
+   ("q" nil "quit")
+   ("a"   projectile-ag)
+   ("A"   projectile-grep)
+   ("b"   projectile-switch-to-buffer)
+   ("B"   projectile-switch-to-buffer-other-window)
+   ("c"   projectile-run-async-shell-command-in-root)
+   ("C"   projectile-run-command-in-root)
+   ("d"   projectile-find-dir)
+   ("D"   projectile-find-dir-other-window)
+   ("f"   projectile-find-file)
+   ("F"   projectile-find-file-other-window)
+   ("g"   projectile-vc)
+   ("h"   projectile-dired)
+   ("i"   projectile-project-info)
+   ("kc"  projectile-invalidate-cache)
+   ("kd"  projectile-remove-known-project)
+   ("kk"  projectile-cache-current-file)
+   ("P"   projectile-switch-project)
+   ("K"   projectile-kill-buffers)
+   ("ks"  projectile-cleanup-known-projects)
+   ("l"   projectile-find-file-dwim)
+   ("L"   projectile-find-file-dwim-other-window)
+   ("m"   projectile-compile-project)
+   ("o"   projectile-find-other-file)
+   ("O"   projectile-find-other-file-other-window)
+   ("p"   projectile-commander)
+   ("r"   projectile-recentf)
+   ("s"   projectile-multi-occur)
+   ("S"   projectile-replace)
+   ("t"   projectile-find-tag)
+   ("T"   projectile-regenerate-tags)
+   ("u"   projectile-find-test-file)
+   ("U"   projectile-test-project)
+   ("v"   projectile-display-buffer)
+   ("V"   projectile-ibuffer)
+   ("X"   fixmee-mode)
+   ("x"   fixmee-view-listing))
+
+(global-set-key (kbd "C-=") 'hydra-projectile/body)
+
+
+;; (key-chord-define-global
+;;  "rr"
+;;  (defhydra hydra-cljr (:color pink :hint nil)
+;;    " Fns & General ^^NS / Import ^^Project ^^Let ------------------------------------------------------------------------------------------------------------------------------------ _pf_ Promote function _am_ Add missing libspec _pc_ Project clean _il_ Introduce let _cp_ Cycle privacy _cn_ Clean ns _hd_ Hotload dependency _el_ Expand let _fe_ Create function from example _sr_ Stop referring _sp_ Sort project dependencies _rl_ Remove let _cs_ Change function signature _ru_ Replace use _ap_ Add project dependency _ml_ Move to let _dk_ Destructure keys _ai_ Add import to ns _sc_ Show the project's changelog _ec_ Extract constant _au_ Add use to ns _up_ Update project dependencies ^Threading _ef_ Extract function _ar_ Add require to ns _ad_ Add declaration ------------------------ _fu_ Find usages _sn_ Sort ns ^^ _th_ Thread _is_ Inline symbol _rr_ Remove unused requires ^^ _tf_ Thread first all _mf_ Move form to ns ^^^^ _tl_ Thread last all _rf_ Rename file-or-dir ^^^^ _ua_ Unwind all _rs_ Rename symbol ^^^^ _uw_ Unwind ^^^^^^_ct_ Cycle thread _as_ Add stubs for the interface / protocol at point. _cc_ Cycle coll _rd_ Remove debug fns _ci_ Cycle if _q_ quit "
+;;    ("ai" cljr-add-import-to-ns "Add import to ns")
+;;    ("am" cljr-add-missing-libspec "Add missing libspec")
+;;    ("ap" cljr-add-project-dependency "Add project dependency")
+;;    ("ar" cljr-add-require-to-ns "Add require to ns")
+;;    ("as" cljr-add-stubs "Add stubs for the interface / protocol at point.")
+;;    ("au" cljr-add-use-to-ns "Add use to ns")
+;;    ("cc" cljr-cycle-coll "Cycle coll")
+;;    ("ci" cljr-cycle-if "Cycle if")
+;;    ("cn" cljr-clean-ns "Clean ns")
+;;    ("cp" cljr-cycle-privacy "Cycle privacy")
+;;    ("cs" cljr-change-function-signature "Change function signature")
+;;    ("ct" cljr-cycle-thread "Cycle thread")
+;;    ("dk" cljr-destructure-keys "Destructure keys")
+;;    ("ec" cljr-extract-constant "Extract constant")
+;;    ("ef" cljr-extract-function "Extract function")
+;;    ("el" cljr-expand-let "Expand let")
+;;   ("fe" cljr-create-fn-from-example "Create function from example")
+;;    ("fu" cljr-find-usages "Find usages")
+;;    ("hd" cljr-hotload-dependency "Hotload dependency")
+;;    ("il" cljr-introduce-let "Introduce let")
+;;   ("is" cljr-inline-symbol "Inline symbol")
+;;    ("mf" cljr-move-form "Move form")
+;;    ("ml" cljr-move-to-let "Move to let")
+;;   ("pc" cljr-project-clean "Project clean")
+;;    ("pf" cljr-promote-function "Promote function")
+;;    ("rd" cljr-remove-debug-fns "Remove debug fns")
+;;    ("rf" cljr-rename-file-or-dir "Rename file-or-dir")
+;;    ("rl" cljr-remove-let "Remove let")
+;;  ("rr" cljr-remove-unused-requires "Remove unused requires")
+;;    ("rs" cljr-rename-symbol "Rename symbol")
+;;    ("ru" cljr-replace-use "Replace use")
+;;    ("sn" cljr-sort-ns "Sort ns")
+;;    ("sc" cljr-show-changelog "Show the project's changelog")
+;;    ("sp" cljr-sort-project-dependencies "Sort project dependencies")
+;;    ("sr" cljr-stop-referring "Stop referring")
+;;    ("tf" cljr-thread-first-all "Thread first all")
+;;    ("th" cljr-thread "Thread")
+;;    ("tl" cljr-thread-last-all "Thread last all")
+;;    ("ua" cljr-unwind-all "Unwind all")
+;;    ("uw" cljr-unwind "Unwind")
+;;    ("up" cljr-update-project-dependencies "Update project dependencies")
+;;    ("ad" cljr-add-declaration "Add declaration")
+;;    ("q" nil :exit true)))
+
+
+
+(defhydra hydra-git-gutter
+  (
+   :body-pre (git-gutter-mode 1)
+	     :idle 0
+	     :hint "my test head")
+  "
+Git gutter:
+  _j_: next hunk        _s_tage hunk     _q_uit
+  _k_: previous hunk    _r_evert hunk    _Q_uit and deactivate git-gutter
+  ^ ^                   _p_opup hunk
+  _h_: first hunk
+  _l_: last hunk        set start _R_evision
+"
+  ("j" git-gutter:next-hunk)
+  ("<down>" git-gutter:next-hunk)
+  ("k" git-gutter:previous-hunk)
+  ("<up>" git-gutter:previous-hunk)
+  
+  ("h" (progn (goto-char (point-min))
+	      (git-gutter:next-hunk 1)))
+  ("<home>" (progn (goto-char (point-min))
+		   (git-gutter:next-hunk 1)))
+  
+  ("l" (progn (goto-char (point-min))
+	      (git-gutter:previous-hunk 1)))
+  ("<end>" (progn (goto-char (point-min))
+		  (git-gutter:previous-hunk 1)))
+  ("s" git-gutter:stage-hunk)
+  ("r" git-gutter:revert-hunk)
+  ("p" git-gutter:popup-hunk)
+  ("R" git-gutter:set-start-revision)
+  ("q" nil :color blue)
+  ("Q" (progn (git-gutter-mode -1)
+	      ;; git-gutter-fringe doesn't seem to
+	      ;; clear the markup right away
+	      (sit-for 0.1)
+	      (git-gutter:clear))
+   :color blue))
+
+
+(global-set-key (kbd "C-c g")  'hydra-git-gutter/body)
