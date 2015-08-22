@@ -268,7 +268,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (magit yasnippet workgroups troncle s rainbow-delimiters paredit-menu paredit multiple-cursors markdown-mode jump-char iy-go-to-char itail iedit helm fuzzy fringe-helper fiplr ess ctable company command-log-mode arduino-mode ace-jump-mode ac-cider 2048-game))))
+    (git-gutter-fringe fixmee workgroups web-mode tidy restclient paredit-menu markdown-mode magit key-chord jump-char itail iedit hydra helm-projectile fiplr ess command-log-mode clj-refactor ace-jump-mode ac-cider))))
 
 
 ;; ===================================================================================================
@@ -303,6 +303,7 @@
 (global-unset-key "")
 
 ;; ===================================================================================================
+(setq magit-last-seen-setup-instructions "1.4.0")
 
 ;; setup pairning env
 (defun ss-setup ()
@@ -321,7 +322,7 @@
 	(server-start))))
 
 
-(ss-setup)
+;; (ss-setup)
 
 
 ;; ===================================================================================================
@@ -524,4 +525,11 @@ Git gutter:
    :color blue))
 
 
+
 (global-set-key (kbd "C-c g")  'hydra-git-gutter/body)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right. ..
+ )
