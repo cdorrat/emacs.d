@@ -349,6 +349,11 @@
 (require 'fixmee)
 ;(global-fixmee-mode 1)
 
+(defun my-curr-buffer-to-cider ()
+  (interactive)
+  (pop-to-buffer-same-window   
+   (cider-get-repl-buffer)))
+
 (require 'hydra)
 (key-chord-define-global
  "ww"
@@ -373,6 +378,7 @@
    ("C-b" windmove-left) 
    ("=" balance-windows)
    ("r" rotate-windows)
+   ("c" my-curr-buffer-to-cider)
    ("B" helm-projectile-switch-to-buffer)
    ("b" ido-switch-buffer)
    ("F" helm-projectile-find-file)
