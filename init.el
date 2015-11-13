@@ -118,28 +118,6 @@
 (setq fiplr-root-markers '(".git" ".svn" "project.clj"))
 (global-set-key [33554450] 'fiplr-find-file) ;; C-S-r
 
-;; support for loading & saving window/buffer config
- (require 'workgroups)
- (setq wg-prefix-key (kbd "C-x w")
-       wg-restore-associated-buffers t ; restore all buffers opened in this WG?
-       wg-use-default-session-file t   ; turn off for "emacs --daemon"
-       wg-default-session-file "~/.emacs_files/workgroups"
-       wg-use-faces nil
-       wg-morph-on nil)
-
-;; ;; Keyboard shortcuts - load, save, switch
-(global-set-key (kbd "<pause>")     'wg-revert-workgroup)
-(global-set-key (kbd "C-<pause>") 'wg-update-workgroup)
-;; ;(global-set-key (kbd "s-z")         'wg-switch-to-workgroup)
-;; ;(global-set-key (kbd "s-/")         'wg-switch-to-previous-workgroup)
-
-(workgroups-mode 1)     ; Activate workgroups
-(unless (file-directory-p "~/.emacs_files")
-  (mkdir "~/.emacs_files"))
-
-(when (file-exists-p wg-default-session-file)
-  (wg-load wg-default-session-file))
-
 ;; =================================================================================================== 
 ;; auto completion
 (setq tab-always-indent 'complete)
@@ -394,7 +372,7 @@
    [_l_] file dwim     [_A_] grep        [_v_] show all       [_p_] commander     [_L_] dwim          [_m_] compile     [_kk_] add current   [_X_] toggle
    [_r_] recent file   [_s_] occur       [_V_] ibuffer        [_i_] info          [_D_] dir           [_c_] shell       [_ks_] cleanup
    [_d_] dir           [_S_] replace     [_K_] kill all        ^ ^                [_O_] other         [_C_] command     [_kd_] remove
-    ^ ^                 ^ ^               ^ ^                  ^ ^                [_B_] buffer
+    ^ ^                 ^ ^              [_y_] kill ring       ^ ^                [_B_] buffer
    [_P_] Switch Project
   --------------------------------------------------------------------------------
         "
@@ -436,7 +414,8 @@
    ("v"   projectile-display-buffer)
    ("V"   projectile-ibuffer)
    ("X"   fixmee-mode)
-   ("x"   fixmee-view-listing))
+   ("x"   fixmee-view-listing)
+   ("y"   helm-show-kill-ring "list" :color blue))
 
 (global-set-key (kbd "C-=") 'hydra-projectile/body)
 
@@ -539,3 +518,26 @@ Git gutter:
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right. ..
  )
+
+;; ===================================================================================================
+;; support for loading & saving window/buffer config
+ (require 'workgroups)
+ (setq wg-prefix-key (kbd "C-x w")
+       wg-restore-associated-buffers t ; restore all buffers opened in this WG?
+       wg-use-default-session-file t   ; turn off for "emacs --daemon"
+       wg-default-session-file "~/.emacs_files/workgroups"
+       wg-use-faces nil
+       wg-morph-on nil)
+
+;; ;; Keyboard shortcuts - load, save, switch
+(global-set-key (kbd "<pause>")     'wg-revert-workgroup)
+(global-set-key (kbd "C-<pause>") 'wg-update-workgroup)
+;; ;(global-set-key (kbd "s-z")         'wg-switch-to-workgroup)
+;; ;(global-set-key (kbd "s-/")         'wg-switch-to-previous-workgroup)
+
+(workgroups-mode 1)     ; Activate workgroups
+(unless (file-directory-p "~/.emacs_files")
+  (mkdir "~/.emacs_files"))
+
+(when (file-exists-p wg-default-session-file)
+  (wg-load wg-default-session-file))
