@@ -53,34 +53,38 @@
 
 
 (defvar cdorrat/packages '(
-			  ac-cider
-			  cl
-			  clj-refactor
-			  command-log-mode
-			  helm-projectile
-			  hydra
-			  key-chord
-			  magit
-			  markdown-mode
-			  multiple-cursors
-			  projectile
-                          ace-jump-mode
-                          cider
-                          dash
-                          ess
-                          fiplr
-			  fixmee
-			  git-gutter-fringe
-                          iedit
-                          itail
-                          jump-char
-                          nxml
-                          package
-                          paredit
-                          paredit-menu
-                          s
-                          tramp
-                          workgroups))
+			   ac-cider
+			   ag
+			   cl
+			   clj-refactor
+			   command-log-mode
+			   helm-projectile
+			   hydra
+			   key-chord
+			   magit
+			   markdown-mode
+			   multiple-cursors
+			   projectile
+			   ace-jump-mode
+			   cider
+			   dash
+			   ess
+			   fiplr
+			   fixmee
+			   git-gutter-fringe
+			   helm-ag
+			   iedit
+			   itail
+			   jump-char
+			   nxml
+			   package
+			   paredit
+			   paredit-menu
+			   s
+			   tramp
+			   workgroups
+			   wsd-mode
+			   yaml-mode))
 
 (require 'cl)
 (require 'package)
@@ -246,7 +250,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (git-gutter-fringe fixmee workgroups web-mode tidy restclient paredit-menu markdown-mode magit key-chord jump-char itail iedit hydra helm-projectile fiplr ess command-log-mode clj-refactor ace-jump-mode ac-cider))))
+    (yaml-mode git-gutter-fringe fixmee workgroups web-mode tidy restclient paredit-menu markdown-mode magit key-chord jump-char itail iedit hydra helm-projectile fiplr ess command-log-mode clj-refactor ace-jump-mode ac-cider))))
 
 
 ;; ===================================================================================================
@@ -368,8 +372,8 @@
                                                                                                                           ╭────────────┐                   ╭────────┐
    Files             Search          Buffer             Do                Other Window      Run             Cache         │ Projectile │    Do             │ Fixmee │
  ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────╯  ╭────────────────┴────────╯
-   [_f_] file          [_a_] ag          [_b_] switch         [_g_] magit         [_F_] file          [_U_] test        [_kc_] clear         [_x_] TODO & FIXME
-   [_l_] file dwim     [_A_] grep        [_v_] show all       [_p_] commander     [_L_] dwim          [_m_] compile     [_kk_] add current   [_X_] toggle
+   [_f_] file          [_a_] ag prj      [_b_] switch         [_g_] magit         [_F_] file          [_U_] test        [_kc_] clear         [_x_] TODO & FIXME
+   [_l_] file dwim     [_A_] ag file     [_v_] show all       [_p_] commander     [_L_] dwim          [_m_] compile     [_kk_] add current   [_X_] toggle
    [_r_] recent file   [_s_] occur       [_V_] ibuffer        [_i_] info          [_D_] dir           [_c_] shell       [_ks_] cleanup
    [_d_] dir           [_S_] replace     [_K_] kill all        ^ ^                [_O_] other         [_C_] command     [_kd_] remove
     ^ ^                 ^ ^              [_y_] kill ring       ^ ^                [_B_] buffer
@@ -379,8 +383,8 @@
    ("<tab>" hydra-master/body "back")
    ("<ESC>" nil "quit")
    ("q" nil "quit")
-   ("a"   projectile-ag)
-   ("A"   projectile-grep)
+   ("a"   helm-ag-project-root)
+   ("A"   helm-ag-this-file)
    ("b"   projectile-switch-to-buffer)
    ("B"   projectile-switch-to-buffer-other-window)
    ("c"   projectile-run-async-shell-command-in-root)
@@ -516,7 +520,7 @@ Git gutter:
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right. ..
+ ;; If there is more than one, they won't work right.
  )
 
 ;; ===================================================================================================

@@ -232,9 +232,8 @@
   (local-set-key (kbd "<f12> g") 'my-clj-gui-diff)
   (local-set-key (kbd "<f12> c") 'nrepl-connection-browser)
   (local-set-key (kbd "<f12> f") 'my-figwheel-repl)
-  (local-set-key (kbd "C-c M-t") 'cider-toggle-trace-var)
-
-
+  (local-set-key (kbd "<f12> d") 'cider-debug-defun-at-point)  
+  (local-set-key (kbd "C-c M-t") 'cider-toggle-trace-var)  
   (local-set-key (kbd "M-h") 'mark-sexp)
 )
 
