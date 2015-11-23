@@ -179,6 +179,14 @@
 (global-set-key [67108912] 'ace-jump-mode) ;; Ctrl-0
 (global-unset-key "")
 
+;;
+;; eshell
+;;(local-set-key [C-up] (quote eshell-previous-matching-input-from-input))
+(require 'eshell)
+(add-hook 'eshell-mode-hook
+	  '(lambda ()
+	     (define-key eshell-mode-map [C-up] 'eshell-previous-matching-input-from-input)))
+
 ;;===================================================================================================
 ;; yasnippet setup
 ;; (require 'yasnippet)
@@ -382,7 +390,8 @@
    ("b" ido-switch-buffer)
    ("F" helm-projectile-find-file)
    ("f" ido-find-file)
-   ("q" nil :exit true)))
+   ("q" nil :exit true)
+   ("W" make-frame-command)))
 
  (defhydra hydra-projectile (:color blue :hint nil :idle 0)
    "
@@ -531,3 +540,8 @@ Git gutter:
 
 
 (global-set-key (kbd "C-c g")  'hydra-git-gutter/body)
+
+(defun kill-other-buffers ()
+  "Kill all other buffers."
+  (interactive)
+  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
