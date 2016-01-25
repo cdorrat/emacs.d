@@ -242,6 +242,8 @@
 ;;(add-hook 'nrepl-mode-hook 'enable-my-clojure-keys)
 (add-hook 'cider-mode-hook 'enable-my-clojure-keys)
 (add-hook 'clojure-mode-hook 'enable-my-clojure-keys)
+(add-hook 'cider-repl-mode-hook 'enable-my-clojure-keys)
+
 
 ;; (global-set-key [f12] (quote my-nrepl-selector))
 
