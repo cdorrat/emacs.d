@@ -92,6 +92,7 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
+(add-to-list 'package-pinned-packages '(clojure-mode . "melpa-stable") t)
 (package-initialize)
 
 (defun cdorrat/packages-installed-p ()
@@ -312,7 +313,7 @@
 	(server-start))))
 
 
-;; (ss-setup)
+(ss-setup)
 
 
 ;; ===================================================================================================
@@ -342,7 +343,7 @@
 (defun my-curr-buffer-to-cider ()
   (interactive)
   (pop-to-buffer-same-window   
-   (cider-get-repl-buffer)))
+   (cider-current-repl-buffer)))
 
 (require 'hydra)
 (key-chord-define-global
@@ -559,3 +560,22 @@ Git gutter:
 
 (when (file-exists-p wg-default-session-file)
   (wg-load wg-default-session-file))
+
+
+;; ===================================================================================================
+;; org mode setup
+(require 'org)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (clojure . t)))
+
+(setq org-babel-clojure-backend 'cider)
+
+(setq org-edit-src-content-indentation 0
+      org-src-tab-acts-natively t
+      org-src-fontify-natively t
+      org-confirm-babel-evaluate nil)
+
+

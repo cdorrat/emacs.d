@@ -230,10 +230,11 @@
   (local-set-key (kbd "<f12> i") 'my-inspect)
   (local-set-key (kbd "<f12> t") 'my-inspect-tree)
   (local-set-key (kbd "<f12> g") 'my-clj-gui-diff)
-  (local-set-key (kbd "<f12> c") 'nrepl-connection-browser)
+  (local-set-key (kbd "<f12> c") 'cider-connection-browser)
   (local-set-key (kbd "<f12> f") 'my-figwheel-repl)
   (local-set-key (kbd "<f12> d") 'cider-debug-defun-at-point)  
-  (local-set-key (kbd "C-c M-t") 'cider-toggle-trace-var)  
+  (local-set-key (kbd "C-c M-t") 'cider-toggle-trace-var)
+  (local-set-key (kbd "C-c M-o") 'cider-repl-clear-buffer)  
   (local-set-key (kbd "M-h") 'mark-sexp)
 )
 
