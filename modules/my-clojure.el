@@ -4,6 +4,8 @@
 ;;(setq cider-hide-special-buffers t) 
 (setq cider-popup-stacktraces-in-repl t)
 (setq cider-repl-history-file "~/.emacs.d/nrepl-history")
+(setq cider-show-error-buffer 'only-in-repl)
+(setq cider-auto-select-error-buffer nil)
 
 (require 'ac-cider)
 (add-hook 'cider-mode-hook 'ac-flyspell-workaround)

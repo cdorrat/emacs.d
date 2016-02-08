@@ -382,10 +382,10 @@
                                                                                                                           ╭────────────┐                   ╭────────┐
    Files             Search          Buffer             Do                Other Window      Run             Cache         │ Projectile │    Do             │ Fixmee │
  ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────╯  ╭────────────────┴────────╯
-   [_f_] file          [_a_] ag prj      [_b_] switch         [_g_] magit         [_F_] file          [_U_] test        [_kc_] clear         [_x_] TODO & FIXME
+   [_f_] file          [_a_] ag prj      [_b_] switch         [_gg_] magit        [_F_] file          [_U_] test        [_kc_] clear         [_x_] TODO & FIXME
    [_l_] file dwim     [_A_] ag file     [_v_] show all       [_p_] commander     [_L_] dwim          [_m_] compile     [_kk_] add current   [_X_] toggle
    [_r_] recent file   [_s_] occur       [_V_] ibuffer        [_i_] info          [_D_] dir           [_c_] shell       [_ks_] cleanup
-   [_d_] dir           [_S_] replace     [_K_] kill all        ^ ^                [_O_] other         [_C_] command     [_kd_] remove
+   [_d_] dir           [_S_] replace     [_K_] kill all       [_gd_] vc diff      [_O_] other         [_C_] command     [_kd_] remove
     ^ ^                 ^ ^              [_y_] kill ring       ^ ^                [_B_] buffer
    [_P_] Switch Project
   --------------------------------------------------------------------------------
@@ -403,7 +403,8 @@
    ("D"   projectile-find-dir-other-window)
    ("f"   projectile-find-file)
    ("F"   projectile-find-file-other-window)
-   ("g"   projectile-vc)
+   ("gg"  projectile-vc)
+   ("gd"  vc-diff)
    ("h"   projectile-dired)
    ("i"   projectile-project-info)
    ("kc"  projectile-invalidate-cache)
