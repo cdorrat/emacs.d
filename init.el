@@ -68,6 +68,7 @@
 			   ace-jump-mode
 			   cider
 			   dash
+			   dockerfile-mode
 			   ess
 			   fiplr
 			   fixmee
@@ -81,6 +82,7 @@
 			   paredit
 			   paredit-menu
 			   s
+			   sass-mode
 			   tramp
 			   workgroups
 			   wsd-mode
@@ -259,7 +261,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yaml-mode git-gutter-fringe fixmee workgroups web-mode tidy restclient paredit-menu markdown-mode magit key-chord jump-char itail iedit hydra helm-projectile fiplr ess command-log-mode clj-refactor ace-jump-mode ac-cider))))
+    (yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode magit key-chord hydra helm-projectile ag workgroups magit-popup jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode clj-refactor ace-jump-mode ac-cider))))
 
 
 ;; ===================================================================================================
@@ -313,7 +315,7 @@
 	(server-start))))
 
 
-(ss-setup)
+;; (ss-setup)
 
 
 ;; ===================================================================================================

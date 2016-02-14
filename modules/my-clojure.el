@@ -17,6 +17,7 @@
      (add-to-list 'ac-modes 'cider-repl-mode)))
 
 (add-hook 'cider-mode-hook 'subword-mode)
+(add-hook 'clojurescript-mode-hook 'paredit-mode)
 
 ;; clj-refactor support
 (require 'clj-refactor)
