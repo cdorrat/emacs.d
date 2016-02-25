@@ -52,12 +52,12 @@
    auto-mode-alist))
 
 
-(defvar cdorrat/packages '(
-			   ac-cider
+(defvar cdorrat/packages '(			   
 			   ag
 			   cl
 			   clj-refactor
 			   command-log-mode
+			   company
 			   helm-projectile
 			   hydra
 			   key-chord
@@ -134,13 +134,13 @@
 (ido-mode 1)
 (ido-everywhere 1)
 
-;; (require 'company)
-;; (global-company-mode)
+(require 'company)
+(global-company-mode)
 
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
-(ac-config-default)
-(ac-flyspell-workaround)
+;; (require 'auto-complete-config)
+;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
+;; (ac-config-default)
+;; (ac-flyspell-workaround)
 
 ;; =================================================================================================== 
 ;; Configure clojure
@@ -261,7 +261,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode magit key-chord hydra helm-projectile ag workgroups magit-popup jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode clj-refactor ace-jump-mode ac-cider))))
+    (yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode magit key-chord hydra helm-projectile ag workgroups magit-popup jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode clj-refactor ace-jump-mode ))))
 
 
 ;; ===================================================================================================
@@ -315,7 +315,7 @@
 	(server-start))))
 
 
-;; (ss-setup)
+(ss-setup)
 
 
 ;; ===================================================================================================

@@ -7,14 +7,14 @@
 (setq cider-show-error-buffer 'only-in-repl)
 (setq cider-auto-select-error-buffer nil)
 
-(require 'ac-cider)
-(add-hook 'cider-mode-hook 'ac-flyspell-workaround)
-(add-hook 'cider-mode-hook 'ac-cider-setup)
-(add-hook 'cider-repl-mode-hook 'ac-cider-setup)
-(eval-after-load "auto-complete"
-  '(progn
-     (add-to-list 'ac-modes 'cider-mode)
-     (add-to-list 'ac-modes 'cider-repl-mode)))
+;; (require 'ac-cider)
+;; (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
+;; (add-hook 'cider-mode-hook 'ac-cider-setup)
+;; (add-hook 'cider-repl-mode-hook 'ac-cider-setup)
+;; (eval-after-load "auto-complete"
+;;   '(progn
+;;      (add-to-list 'ac-modes 'cider-mode)
+;;      (add-to-list 'ac-modes 'cider-repl-mode)))
 
 (add-hook 'cider-mode-hook 'subword-mode)
 (add-hook 'clojurescript-mode-hook 'paredit-mode)
@@ -83,7 +83,7 @@
 
 (defun my-read-var-name (prompt)
   "read the name of a var with completion"
-   (completing-read prompt (ac-nrepl-candidates-vars)
+   (completing-read prompt nil ;;(ac-nrepl-candidates-vars)
 		    nil nil (or (nrepl-sexp-at-point)
 				(save-excursion
 				  (unless (equal (string (char-before)) " ")
