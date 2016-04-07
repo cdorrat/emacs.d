@@ -148,6 +148,30 @@
 (require 'setup-paredit)
 (require 'paredit-menu)
 
+(require 'ob)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((clojure . t)
+   (sh . t)
+   (emacs-lisp . t)))
+
+(setq org-babel-clojure-backend 'cider)
+
+;; Let's have pretty source code blocks
+(setq org-edit-src-content-indentation 0
+      org-src-tab-acts-natively t
+      org-src-fontify-natively t
+       org-confirm-babel-evaluate nil
+      org-support-shift-select 'always)
+
+;; Useful keybindings when using Clojure from Org
+(org-defkey org-mode-map "\C-x\C-e" 'cider-eval-last-sexp)
+(org-defkey org-mode-map "\C-c\C-d" 'cider-doc)
+
+;; No timeout when executing calls on Cider via nrepl
+(setq org-babel-clojure-nrepl-timeout nil)
+
 
 ;; ===================================================================================================
 ;; jump-char
