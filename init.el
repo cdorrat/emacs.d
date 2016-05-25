@@ -585,9 +585,6 @@ Git gutter:
 (unless (file-directory-p "~/.emacs_files")
   (mkdir "~/.emacs_files"))
 
-(when (file-exists-p wg-default-session-file)
-  (wg-load wg-default-session-file))
-
 
 ;; ===================================================================================================
 ;; org mode setup
@@ -606,3 +603,7 @@ Git gutter:
       org-confirm-babel-evaluate nil)
 
 
+(put 'narrow-to-region 'disabled nil)
+
+(when (file-exists-p wg-default-session-file)
+  (wg-load wg-default-session-file))
