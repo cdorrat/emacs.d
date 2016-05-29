@@ -32,8 +32,8 @@
 ;; Some default eldoc facilities
 (add-hook 'cider-connected-hook
 	  (defun pnh-clojure-mode-eldoc-hook ()
-	    (add-hook 'cider-mode-hook 'turn-on-eldoc-mode)
-	    (add-hook 'cider-repl-mode-hook 'cider-turn-on-eldoc-mode)
+	    ;;(add-hook 'cider-mode-hook 'turn-on-eldoc-mode)
+	    ;;(add-hook 'cider-repl-mode-hook 'cider-turn-on-eldoc-mode)
 	    (cider-enable-on-existing-clojure-buffers)))
  
 ;;(require 'slamhound)

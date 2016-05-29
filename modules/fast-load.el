@@ -8,10 +8,8 @@
       '(
         ("todo" . "~/todo.txt" )
         ("init" . "~/.emacs.d/init.el" )
-        ("project" . "~/src/clojure/quelea-racing/project.clj" )
 	("lein" . "~/.lein/profiles.clj")
-        ("src" . "~/src/" )
-        ;; more here
+	("watch-todo" . "~/src/clojure/watch-docs/todo.org")
         ))
 
 (defun xah-open-file-fast (openCode)

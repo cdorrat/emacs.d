@@ -154,7 +154,8 @@
  'org-babel-load-languages
  '((clojure . t)
    (sh . t)
-   (emacs-lisp . t)))
+   (emacs-lisp . t)
+   (sql . t)))
 
 (setq org-babel-clojure-backend 'cider)
 
@@ -185,7 +186,7 @@
 
 (global-set-key [(meta m)] 'jump-char-forward)
 (global-set-key [(shift meta m)] 'jump-char-backward)
-(global-set-key [67108912] 'ace-jump-mode) ;; Ctrl-0
+(global-set-key (quote [67108912]) 'ace-jump-mode) ;; Ctrl-0
 (global-unset-key "")
 
 ;;
@@ -316,7 +317,7 @@
 (global-set-key (quote [f9]) 'magit-status)
 (global-set-key [(meta m)] 'jump-char-forward)
 (global-set-key [(shift meta m)] 'jump-char-backward)
-(global-set-key [67108912] 'ace-jump-mode) ;; Ctrl-0
+(global-set-key (quote [67108912]) 'ace-jump-mode) ;; Ctrl-0
 (global-unset-key "")
 
 ;; ===================================================================================================
@@ -329,9 +330,9 @@
   (auto-revert-mode)
   
   ;; show which emacs commands are being used
-  (require 'command-log-mode)
-  (add-hook 'cider-mode-hook 'command-log-mode)
-  (add-hook 'clojure-mode-hook 'command-log-mode)
+  ;; (require 'command-log-mode)
+  ;; (add-hook 'cider-mode-hook 'command-log-mode)
+  ;; (add-hook 'clojure-mode-hook 'command-log-mode)
 
   (if (functionp 'window-system)
       (when (and (window-system)
@@ -339,7 +340,7 @@
 	(server-start))))
 
 
-(ss-setup)
+ (ss-setup)
 
 
 ;; ===================================================================================================
@@ -565,26 +566,6 @@ Git gutter:
  ;; If there is more than one, they won't work right.
  )
 
-;; ===================================================================================================
-;; support for loading & saving window/buffer config
- (require 'workgroups)
- (setq wg-prefix-key (kbd "C-x w")
-       wg-restore-associated-buffers t ; restore all buffers opened in this WG?
-       wg-use-default-session-file t   ; turn off for "emacs --daemon"
-       wg-default-session-file "~/.emacs_files/workgroups"
-       wg-use-faces nil
-       wg-morph-on nil)
-
-;; ;; Keyboard shortcuts - load, save, switch
-(global-set-key (kbd "<pause>")     'wg-revert-workgroup)
-(global-set-key (kbd "C-<pause>") 'wg-update-workgroup)
-;; ;(global-set-key (kbd "s-z")         'wg-switch-to-workgroup)
-;; ;(global-set-key (kbd "s-/")         'wg-switch-to-previous-workgroup)
-
-(workgroups-mode 1)     ; Activate workgroups
-(unless (file-directory-p "~/.emacs_files")
-  (mkdir "~/.emacs_files"))
-
 
 ;; ===================================================================================================
 ;; org mode setup
@@ -604,6 +585,37 @@ Git gutter:
 
 
 (put 'narrow-to-region 'disabled nil)
+
+(require 'ansi-color)
+
+(defun ansi-color-display ()
+  (interactive)
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region (point-min) (point-max))))
+
+
+(require 'password-store)
+
+
+;; ===================================================================================================
+;; support for loading & saving window/buffer config
+ (require 'workgroups)
+ (setq wg-prefix-key (kbd "C-x w")
+       wg-restore-associated-buffers t ; restore all buffers opened in this WG?
+       wg-use-default-session-file t   ; turn off for "emacs --daemon"
+       wg-default-session-file "~/.emacs_files/workgroups"
+       wg-use-faces nil
+       wg-morph-on nil)
+
+;; ;; Keyboard shortcuts - load, save, switch
+(global-set-key (kbd "<pause>")     'wg-revert-workgroup)
+(global-set-key (kbd "C-<pause>") 'wg-update-workgroup)
+;; ;(global-set-key (kbd "s-z")         'wg-switch-to-workgroup)
+;; ;(global-set-key (kbd "s-/")         'wg-switch-to-previous-workgroup)
+
+(workgroups-mode 1)     ; Activate workgroups
+(unless (file-directory-p "~/.emacs_files")
+  (mkdir "~/.emacs_files"))
 
 (when (file-exists-p wg-default-session-file)
   (wg-load wg-default-session-file))
