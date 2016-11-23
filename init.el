@@ -93,8 +93,8 @@
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
-(add-to-list 'package-pinned-packages '(clojure-mode . "melpa-stable") t)
+;; (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
+;; (add-to-list 'package-pinned-packages '(clojure-mode . "melpa-stable") t)
 (package-initialize)
 
 (defun cdorrat/packages-installed-p ()
@@ -286,7 +286,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode magit key-chord hydra helm-projectile ag workgroups magit-popup jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode clj-refactor ace-jump-mode ))))
+    (yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode magit key-chord hydra helm-projectile ag workgroups magit-popup jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode clj-refactor ace-jump-mode))))
 
 
 ;; ===================================================================================================
@@ -594,8 +594,22 @@ Git gutter:
     (ansi-color-apply-on-region (point-min) (point-max))))
 
 
-(require 'password-store)
+;;(require 'password-store)
 
+;; ===================================================================================================
+;; OSX changes
+(when (eq system-type 'darwin)
+  (setq mac-option-modifier 'super)
+  (setq mac-command-modifier 'meta)
+
+  (set-variable
+   'exec-path
+   (quote
+    ("/usr/bin" "/bin" "/usr/sbin" "/usr/local/bin" "/sbin"
+     "/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_9"
+     "/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_9"
+     "/Applications/Emacs.app/Contents/MacOS/libexec"
+     "/Applications/Emacs.app/Contents/MacOS/bin"))))
 
 ;; ===================================================================================================
 ;; support for loading & saving window/buffer config
@@ -619,3 +633,5 @@ Git gutter:
 
 (when (file-exists-p wg-default-session-file)
   (wg-load wg-default-session-file))
+
+
