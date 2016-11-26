@@ -597,11 +597,16 @@ Git gutter:
 ;;(require 'password-store)
 
 ;; ===================================================================================================
-;; OSX changes
+;; OSX specific config
 (when (eq system-type 'darwin)
   (setq mac-option-modifier 'super)
   (setq mac-command-modifier 'meta)
-
+  (global-set-key [f11] (quote toggle-frame-fullscreen))
+  (global-set-key [home] (quote beginning-of-line))
+  (global-set-key [end] (quote end-of-line))
+  (global-set-key [C-help] (quote kill-ring-save))
+  (global-set-key [S-help] (quote yank))  
+   
   (set-variable
    'exec-path
    (quote
