@@ -13,6 +13,7 @@
 (put 'upcase-region 'disabled nil)
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
+(setq visible-bell 1)
 (tool-bar-mode 0)
 (show-paren-mode t)
 
@@ -286,13 +287,15 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode magit key-chord hydra helm-projectile ag workgroups magit-popup jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode clj-refactor ace-jump-mode))))
+    (restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode magit key-chord hydra helm-projectile ag workgroups magit-popup jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode clj-refactor ace-jump-mode))))
 
 
 ;; ===================================================================================================
 (require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C->") 'mc/mark-all-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 (defun eval-and-replace ()
@@ -597,26 +600,6 @@ Git gutter:
 ;;(require 'password-store)
 
 ;; ===================================================================================================
-;; OSX specific config
-(when (eq system-type 'darwin)
-  (setq mac-option-modifier 'super)
-  (setq mac-command-modifier 'meta)
-  (global-set-key [f11] (quote toggle-frame-fullscreen))
-  (global-set-key [home] (quote beginning-of-line))
-  (global-set-key [end] (quote end-of-line))
-  (global-set-key [C-help] (quote kill-ring-save))
-  (global-set-key [S-help] (quote yank))  
-   
-  (set-variable
-   'exec-path
-   (quote
-    ("/usr/bin" "/bin" "/usr/sbin" "/usr/local/bin" "/sbin"
-     "/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_9"
-     "/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_9"
-     "/Applications/Emacs.app/Contents/MacOS/libexec"
-     "/Applications/Emacs.app/Contents/MacOS/bin"))))
-
-;; ===================================================================================================
 ;; support for loading & saving window/buffer config
  (require 'workgroups)
  (setq wg-prefix-key (kbd "C-x w")
@@ -640,3 +623,27 @@ Git gutter:
   (wg-load wg-default-session-file))
 
 
+;; ===================================================================================================
+;; OSX specific config
+(when (eq system-type 'darwin)
+  (setq mac-option-modifier 'super)
+  (setq mac-command-modifier 'meta)
+  (set-face-attribute 'default nil :height 160)
+  (global-set-key [f11] (quote toggle-frame-fullscreen))
+  (global-set-key [C-M-f] (quote toggle-frame-fullscreen))
+  (global-set-key [home] (quote beginning-of-line))
+  (global-set-key [end] (quote end-of-line))
+  (global-set-key [C-help] (quote kill-ring-save))
+  (global-set-key [S-help] (quote yank))
+  
+  (global-set-key [M-f15] (quote wg-update-workgroup))
+  (global-set-key [f15] (quote wg-revert-workgroup))
+   
+  (set-variable
+   'exec-path
+   (quote
+    ("/usr/bin" "/bin" "/usr/sbin" "/usr/local/bin" "/sbin"
+     "/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_9"
+     "/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_9"
+     "/Applications/Emacs.app/Contents/MacOS/libexec"
+     "/Applications/Emacs.app/Contents/MacOS/bin"))))
