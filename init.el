@@ -9,15 +9,19 @@
 ;;  ;; If there is more than one, they won't work right.
 ;;  '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Essential PragmataPro")))))
 
+(set-face-attribute 'default nil :height 120)
+
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
-(setq visible-bell 1)
+;; (setq visible-bell 1)
 ;; (setq ring-bell-function 'ignore)
+
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode 0))
 (show-paren-mode t)
+(setq visible-bell 1)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -128,7 +132,6 @@
 (add-to-list 'load-path modules-path)
 
 (require 'tramp)
-(require 'iedit) ;; C-; search/replace
 
 (require 'fiplr) ;; find files in project
 (setq fiplr-root-markers '(".git" ".svn" "project.clj"))
@@ -301,7 +304,6 @@
  '(package-selected-packages
    (quote
     (minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode sayid less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))))
-
 
 ;; ===================================================================================================
 (require 'multiple-cursors)
@@ -613,8 +615,8 @@ Git gutter:
     (ansi-color-apply-on-region (point-min) (point-max))))
 
 
-;;(require 'password-store)
-
+(require 'iedit) ;; C-; search/replace
+(global-set-key (kbd "C-M-;") 'iedit-toggle-selection)
 ;; ===================================================================================================
 ;; support for loading & saving window/buffer config
  (require 'workgroups)
