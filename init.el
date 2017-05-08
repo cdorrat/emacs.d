@@ -14,7 +14,9 @@
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
 (setq visible-bell 1)
-(tool-bar-mode 0)
+;; (setq ring-bell-function 'ignore)
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode 0))
 (show-paren-mode t)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -287,7 +289,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode magit key-chord hydra helm-projectile ag workgroups magit-popup jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode clj-refactor ace-jump-mode))))
+    (swift-mode flycheck-swift restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode magit key-chord hydra helm-projectile ag workgroups magit-popup jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode clj-refactor ace-jump-mode))))
 
 
 ;; ===================================================================================================
@@ -646,4 +648,7 @@ Git gutter:
      "/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_9"
      "/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_9"
      "/Applications/Emacs.app/Contents/MacOS/libexec"
-     "/Applications/Emacs.app/Contents/MacOS/bin"))))
+     "/Applications/Emacs.app/Contents/MacOS/bin"
+     "/Library/TeX/texbin")))
+  (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))
+  )
