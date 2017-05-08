@@ -313,7 +313,8 @@
 
 ;; ===================================================================================================
 ;; Custom key bindings
-(mouse-wheel-mode t)
+(when (fboundp 'mouse-wheel-mode)
+  (mouse-wheel-mode t))
 (global-set-key [mouse-4] 'scroll-down)
 (global-set-key [mouse-5] 'scroll-up)
 (global-set-key (quote [201326632]) 'scroll-down)
