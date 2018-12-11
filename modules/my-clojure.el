@@ -20,14 +20,20 @@
 (add-hook 'clojurescript-mode-hook 'paredit-mode)
 
 ;; clj-refactor support
-(require 'clj-refactor)
+;;(require 'clj-refactor)
 
 (defun my-clojure-mode-hook ()
-    (clj-refactor-mode 1)
+;;    (clj-refactor-mode 1)
     (yas-minor-mode 1) ; for adding require/use/import
-    (cljr-add-keybindings-with-prefix "C-c C-m"))
+    (cljr-add-keybindings-with-prefix "C-c C-m")
+    (setq dash-at-point-docset "clojure"))
 
 (add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
+
+(require 'sayid)
+(eval-after-load 'clojure-mode
+   '(sayid-setup-package))
+
 
 ;; Some default eldoc facilities
 (add-hook 'cider-connected-hook
@@ -233,9 +239,10 @@
   (local-set-key (kbd "<f12> i") 'my-inspect)
   (local-set-key (kbd "<f12> t") 'my-inspect-tree)
   (local-set-key (kbd "<f12> g") 'my-clj-gui-diff)
-  (local-set-key (kbd "<f12> c") 'cider-connection-browser)
+  (local-set-key (kbd "<f12> c") 'sesman-browser)
   (local-set-key (kbd "<f12> f") 'my-figwheel-repl)
-  (local-set-key (kbd "<f12> d") 'cider-debug-defun-at-point)  
+  (local-set-key (kbd "<f12> d") 'cider-debug-defun-at-point)
+  
   (local-set-key (kbd "C-c M-t") 'cider-toggle-trace-var)
   (local-set-key (kbd "C-c M-o") 'cider-repl-clear-buffer)  
   (local-set-key (kbd "M-h") 'mark-sexp)
@@ -282,6 +289,12 @@
 ;;   )
 
 ;; troncle adds support for tracing
+
 ;;(load-library "troncle")
+
+(setq cider-cljs-lein-repl
+	"(do (require 'figwheel-sidecar.repl-api)
+         (figwheel-sidecar.repl-api/start-figwheel!)
+         (figwheel-sidecar.repl-api/cljs-repl))")
 
 (provide 'my-clojure)

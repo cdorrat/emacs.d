@@ -55,12 +55,17 @@
    auto-mode-alist))
 
 
-(defvar cdorrat/packages '(			   
+(defvar cdorrat/packages '(
 			   ag
 			   cl
-			   clj-refactor
+			   ;;clj-refactor
 			   command-log-mode
 			   company
+			   dash-at-point
+			   elpy
+			   jedi
+			   py-autopep8
+			   py-yapf
 			   helm-projectile
 			   hydra
 			   key-chord
@@ -86,6 +91,7 @@
 			   paredit-menu
 			   s
 			   sass-mode
+			   sayid
 			   tramp
 			   workgroups
 			   wsd-mode
@@ -287,9 +293,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(arduino-executable "/Applications/dev/Arduino.app/Contents/MacOS/Arduino")
+ '(clojure-build-tool-files
+   (quote
+    ("project.clj" "build.boot" "build.gradle" "shadow-cljs.edn")))
+ '(magit-git-executable "/usr/local/bin/git")
  '(package-selected-packages
    (quote
-    (swift-mode flycheck-swift restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode magit key-chord hydra helm-projectile ag workgroups magit-popup jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode clj-refactor ace-jump-mode))))
+    (jedi jedi-core py-autopep8 py-yapf elpy clojure-mode sayid less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))))
 
 
 ;; ===================================================================================================
@@ -576,6 +587,8 @@ Git gutter:
 ;; ===================================================================================================
 ;; org mode setup
 (require 'org)
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -652,4 +665,27 @@ Git gutter:
      "/Applications/Emacs.app/Contents/MacOS/bin"
      "/Library/TeX/texbin")))
   (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))
+
+  (require 'dash-at-point)
+  (global-set-key (kbd "<f12> s") 'dash-at-point)
   )
+
+(global-set-key (kbd "C-S-k") 'fixup-whitespace)
+;; (setq cider-cljs-lein-repl
+;; 	"(do (require 'figwheel-sidecar.repl-api)
+;;          (figwheel-sidecar.repl-api/start-figwheel! \"devcards\")
+;;          (figwheel-sidecar.repl-api/cljs-repl))")
+
+
+;; to set the repl type (seems necessasry with shadow-cljs)
+;;  (cider-repl-set-type "cljs")
+;; (shadow/nrepl-select :browser)
+
+;; python support
+(elpy-enable)
+
+
+;; scratch functions
+;; convery a binary strign to hex eg. (bin2hex "1011")
+(defun bin2hex (s)
+  (format "0x%X" (string-to-number s 2)))
