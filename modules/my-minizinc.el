@@ -90,7 +90,7 @@
   (local-set-key (kbd "C-c C-M-k") 'minizinc-run-verbose)
   (local-set-key (kbd "C-c C-z") 'minizinc-switch-to-output))
 
-(add-hook 'minizinc-mode-hook 'enable-my-min)
+(add-hook 'minizinc-mode-hook 'enable-my-minizinc-keys)
 
 (provide 'my-minizinc)
-(cider-switch-to-repl-buffer)
+
