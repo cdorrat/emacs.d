@@ -300,7 +300,7 @@
  '(magit-git-executable "/usr/local/bin/git")
  '(package-selected-packages
    (quote
-    (jedi jedi-core py-autopep8 py-yapf elpy clojure-mode sayid less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))))
+    (minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode sayid less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))))
 
 
 ;; ===================================================================================================
@@ -663,7 +663,8 @@ Git gutter:
      "/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_9"
      "/Applications/Emacs.app/Contents/MacOS/libexec"
      "/Applications/Emacs.app/Contents/MacOS/bin"
-     "/Library/TeX/texbin")))
+     "/Library/TeX/texbin"
+     "/Applications/dev/MiniZincIDE.app/Contents/Resources")))
   (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))
 
   (require 'dash-at-point)
@@ -689,3 +690,6 @@ Git gutter:
 ;; convery a binary strign to hex eg. (bin2hex "1011")
 (defun bin2hex (s)
   (format "0x%X" (string-to-number s 2)))
+
+
+(require 'my-minizinc)
