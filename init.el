@@ -706,18 +706,6 @@ Git gutter:
   (global-set-key [M-f15] (quote wg-update-workgroup))
   (global-set-key [f15] (quote wg-revert-workgroup))
    
-  ;; (set-variable
-  ;;  'exec-path
-  ;;  (quote
-  ;;   ("/usr/bin" "/bin" "/usr/sbin" "/usr/local/bin" "/sbin"
-  ;;    "/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_9"
-  ;;    "/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_9"
-  ;;    "/Applications/Emacs.app/Contents/MacOS/libexec"
-  ;;    "/Applications/Emacs.app/Contents/MacOS/bin"
-  ;;    "/Library/TeX/texbin"
-  ;;    "/Applications/dev/MiniZincIDE.app/Contents/Resources")))
-;;  (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))
-
   (require 'dash-at-point)
   (global-set-key (kbd "<f12> s") 'dash-at-point)
   )
