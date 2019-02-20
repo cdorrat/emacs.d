@@ -9,15 +9,23 @@
 ;;  ;; If there is more than one, they won't work right.
 ;;  '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Essential PragmataPro")))))
 
+
+(set-face-attribute 'default nil :height 120) 
+(set-face-attribute 'default nil :family "Hack")
+;;(set-face-attribute 'default nil :family "Essential PragmataPro")
+
+
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
-(setq visible-bell 1)
+;; (setq visible-bell 1)
 ;; (setq ring-bell-function 'ignore)
+
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode 0))
 (show-paren-mode t)
+(setq visible-bell 1)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -58,7 +66,8 @@
 (defvar cdorrat/packages '(
 			   ag
 			   cl
-			   ;;clj-refactor
+			   clj-refactor
+			   cider-hydra
 			   command-log-mode
 			   company
 			   dash-at-point
@@ -74,6 +83,8 @@
 			   magit
 			   markdown-mode
 			   multiple-cursors
+			   org-bullets
+			   org-trello
 			   projectile
 			   ace-jump-mode
 			   cider
@@ -88,18 +99,21 @@
 			   itail
 			   jump-char
 			   nxml
+			   restclient
+			   restclient-helm
 			   package
 			   paredit
 			   paredit-menu
 			   s
 			   sass-mode
 			   sayid
+			   string-inflection
 			   tramp
 			   workgroups
 			   wsd-mode
-			   yaml-mode))
+			   yaml-mode)
 
-(require 'cl)
+  (require 'cl))
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
@@ -130,7 +144,6 @@
 (add-to-list 'load-path modules-path)
 
 (require 'tramp)
-(require 'iedit) ;; C-; search/replace
 
 (require 'fiplr) ;; find files in project
 (setq fiplr-root-markers '(".git" ".svn" "project.clj"))
@@ -181,6 +194,8 @@
 (org-defkey org-mode-map "\C-x\C-e" 'cider-eval-last-sexp)
 (org-defkey org-mode-map "\C-c\C-d" 'cider-doc)
 
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 ;; No timeout when executing calls on Cider via nrepl
 (setq org-babel-clojure-nrepl-timeout nil)
 
@@ -295,15 +310,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(arduino-executable "/Applications/dev/Arduino.app/Contents/MacOS/Arduino")
- '(clojure-build-tool-files
-   (quote
-    ("project.clj" "build.boot" "build.gradle" "shadow-cljs.edn")))
+ '(magit-bury-buffer-function (quote magit-mode-quit-window))
+ '(magit-dispatch-arguments nil)
  '(magit-git-executable "/usr/local/bin/git")
+ '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
    (quote
     (minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode sayid less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))))
-
 
 ;; ===================================================================================================
 (require 'multiple-cursors)
@@ -481,6 +494,7 @@
 (global-set-key (kbd "C-=") 'hydra-projectile/body)
 
 
+
 ;; (key-chord-define-global
 ;;  "rr"
 ;;  (defhydra hydra-cljr (:color pink :hint nil)
@@ -578,12 +592,12 @@ Git gutter:
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Hack")))))
 
 
 ;; ===================================================================================================
@@ -615,8 +629,8 @@ Git gutter:
     (ansi-color-apply-on-region (point-min) (point-max))))
 
 
-;;(require 'password-store)
-
+(require 'iedit) ;; C-; search/replace
+(global-set-key (kbd "C-M-;") 'iedit-toggle-selection)
 ;; ===================================================================================================
 ;; support for loading & saving window/buffer config
  (require 'workgroups)
@@ -641,6 +655,39 @@ Git gutter:
   (wg-load wg-default-session-file))
 
 
+(eval-after-load "ediff"
+  '(progn
+     (message "doing ediff customisation")
+     (setq ediff-window-setup-function 'ediff-setup-windows-default) ;; ediff-setup-windows-plain)
+
+     ;; (add-hook 'ediff-startup-hook 'ediff-toggle-wide-display)
+     ;; (add-hook 'ediff-cleanup-hook 'ediff-toggle-wide-display)
+     ;; (add-hook 'ediff-suspend-hook 'ediff-toggle-wide-display)
+     ))
+
+
+(require 'string-inflection)
+(global-unset-key (kbd "C-q"))
+;; C-q C-u is the key bindings similar to Vz Editor.\
+(global-set-key (kbd "C-q C-u") 'my-string-inflection-cycle-auto)
+(global-set-key (kbd "C-q C-k") 'string-inflection-kebab-case)
+
+
+(defun my-string-inflection-cycle-auto ()
+  "switching by major-mode"
+  (interactive)
+  (cond
+   ;; for emacs-lisp-mode
+   ((eq major-mode 'emacs-lisp-mode)
+    (string-inflection-all-cycle))
+   ;; for java
+   ((eq major-mode 'java-mode)
+    (string-inflection-java-style-cycle))
+   (t
+    ;; default
+    (string-inflection-ruby-style-cycle))))
+
+
 ;; ===================================================================================================
 ;; OSX specific config
 (when (eq system-type 'darwin)
@@ -648,7 +695,7 @@ Git gutter:
   (setq mac-command-modifier 'meta)
   (set-face-attribute 'default nil :height 160)
   (exec-path-from-shell-initialize)
-  
+
   (global-set-key [f11] (quote toggle-frame-fullscreen))
   (global-set-key [C-M-f] (quote toggle-frame-fullscreen))
   (global-set-key [home] (quote beginning-of-line))
@@ -674,21 +721,73 @@ Git gutter:
   (require 'dash-at-point)
   (global-set-key (kbd "<f12> s") 'dash-at-point)
   )
+;; org-trello setup
+
+(require 'org-trello)
+
+(defun my-sync-from-trello ()
+  "pull remote trello chnages"
+  (interactive)
+  (let ((current-prefix-arg 0)) ;; emulate C-u
+    (call-interactively 'org-trello-sync-buffer)))
+
+(defhydra hydra-trello  (:color blue :hint nil :idle 0)
+  "
+Work with trello boards: 
+[_s_] Sync card     [_i_] init buffer   [_v_] View board in trello
+[_S_] Sync buffer   [_n_] create board  [_c_] View card in trello
+[_C_] Sync comments [_f_] pull changes from trello "
+  ("s" org-trello-sync-card)
+  ("S" org-trello-sync-buffer)
+  ("f" my-sync-from-trello)
+  ("C" org-trello-sync-comment)
+  ("i" org-trello-install-board-metadata)
+  ("n" org-trello-create-board-and-install-metadata)
+  ("v" org-trello-jump-to-trello-board)
+  ("c" org-trello-jump-to-trello-card))
+
+(global-set-key (kbd "C-+")  'hydra-trello/body)
+
+
+
+;; ===================================================================================================
+;;
+(require 'restclient-helm)
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+(require 'dash-at-point)
+(global-set-key (kbd "<f12> s") 'dash-at-point) 
+
+
+(require 'magit-gh-pulls)
+(add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
+
 
 (global-set-key (kbd "C-S-k") 'fixup-whitespace)
-;; (setq cider-cljs-lein-repl
-;; 	"(do (require 'figwheel-sidecar.repl-api)
-;;          (figwheel-sidecar.repl-api/start-figwheel! \"devcards\")
-;;          (figwheel-sidecar.repl-api/cljs-repl))")
+
+(defun json-format-region ()
+  (interactive)
+  (shell-command-on-region 6465 57894 "python -m json.tool" nil nil nil t nil))
 
 
-;; to set the repl type (seems necessasry with shadow-cljs)
-;;  (cider-repl-set-type "cljs")
-;; (shadow/nrepl-select :browser)
+(setq cider-cljs-lein-repl
+	"(do (require 'figwheel-sidecar.repl-api)
+         (figwheel-sidecar.repl-api/start-figwheel!)
+         (figwheel-sidecar.repl-api/cljs-repl))")
 
-;; python support
-(elpy-enable)
 
+(defun my-create-feature-branch (branch-name)
+  (interactive "Mbranch name: ")
+  (magit-checkout "master")
+  (magit-fetch-all "origin")
+  (magit-branch-and-checkout branch-name "master")
+  (message "Switched to new branch " branch-name))
 
 ;; scratch functions
 ;; convery a binary strign to hex eg. (bin2hex "1011")
@@ -702,4 +801,23 @@ Git gutter:
 (require 'minizinc-mode)
 (add-to-list 'auto-mode-alist '("\\.mzn\\'" . minizinc-mode))
 (add-to-list 'auto-mode-alist '("\\.dzn\\'" . minizinc-mode))
+
+;; setup sql mode
+(require 'sql)
+;;(defalias 'sql-get-login 'ignore)
+
+(defun format-xml-buffer ()
+  (interactive)
+  (set-mark (point-min))
+  (goto-char (point-max))
+  (activate-mark)
+  (shell-command-on-region (point-min) (point-max) "xmllint --format - " (quote (4)) (quote (4)) nil t nil))
+
+(defun my-toggle-big-font ()
+  (interactive)
+  (let ((curr-size (face-attribute 'default :height)))
+    (set-face-attribute 'default nil :height (if (>  curr-size 120) 120 150))))
+
+(global-set-key (kbd "M-+") 'my-toggle-big-font)
+
 

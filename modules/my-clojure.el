@@ -1,6 +1,7 @@
 ;; clojure mode settings
 
 (require 'cider)
+
 ;;(setq cider-hide-special-buffers t) 
 (setq cider-popup-stacktraces-in-repl t)
 (setq cider-repl-history-file "~/.emacs.d/nrepl-history")
@@ -15,12 +16,14 @@
 ;;   '(progn
 ;;      (add-to-list 'ac-modes 'cider-mode)
 ;;      (add-to-list 'ac-modes 'cider-repl-mode)))
-
 (add-hook 'cider-mode-hook 'subword-mode)
 (add-hook 'clojurescript-mode-hook 'paredit-mode)
 
 ;; clj-refactor support
-;;(require 'clj-refactor)
+(require 'clj-refactor)
+(require 'cider-hydra)
+;;(require 'sayid)
+;;(cider-hydra-on)
 
 (defun my-clojure-mode-hook ()
 ;;    (clj-refactor-mode 1)
@@ -30,9 +33,9 @@
 
 (add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
 
-(require 'sayid)
-(eval-after-load 'clojure-mode
-   '(sayid-setup-package))
+;; (require 'sayid)
+;; (eval-after-load 'clojure-mode
+;;    '(sayid-setup-package))
 
 
 ;; Some default eldoc facilities
@@ -41,6 +44,39 @@
 	    ;;(add-hook 'cider-mode-hook 'turn-on-eldoc-mode)
 	    ;;(add-hook 'cider-repl-mode-hook 'cider-turn-on-eldoc-mode)
 	    (cider-enable-on-existing-clojure-buffers)))
+
+
+;; (defun my-clojure-switch-to-repl  (&optional set-namespace)
+;;   "The buffer chosen is based on the file open in the current buffer.  If
+;; multiple REPL buffers are associated with current connection the most
+;; recent is used.
+
+;; If the REPL buffer cannot be unambiguously determined, the REPL
+;; buffer is chosen based on the current connection buffer and a
+;; message raised informing the user.
+
+;; Hint: You can use `display-buffer-reuse-frames' and
+;; `special-display-buffer-names' to customize the frame in which
+;; the buffer should appear.
+
+;; With a prefix arg SET-NAMESPACE sets the namespace in the REPL buffer to that
+;; of the namespace in the Clojure source buffer."
+;;   (interactive "P")
+;;   (let* ((connections (cider-connections))
+;;          (type (cider-connection-type-for-buffer))
+;; 	 (buffer-dir (clojure-project-dir (file-name-directory buffer-file-name)))
+;;          (a-repl)
+;;          (the-repl (or
+;; 		    (cider-find-connection-buffer-for-project-directory buffer-dir)
+;; 		    (seq-find (lambda (b)
+;; 				(when (member b connections)
+;; 				  (unless a-repl
+;; 				    (setq a-repl b))
+;; 				  (equal type (cider-connection-type-for-buffer b))))
+;; 			      (buffer-list)))))
+;;     (if-let* ((repl (or the-repl a-repl)))
+;;         (cider--switch-to-repl-buffer repl set-namespace)
+;;       (user-error "No REPL found"))))
  
 ;;(require 'slamhound)
 ;; seems to be a bug inthe current elpa version 20121227.1032, 
@@ -120,7 +156,8 @@
      '(do 
 	  (use 'clojure.pprint)
 	  (use 'clojure.inspector)
-	(require '[clojure.tools [trace :as tt]])))))
+	(require '[clojure.tools [trace :as tt]])
+	(require '[sc.api :as sapi])))))
 
 (defun my-clj-gui-diff (a b)
   "Run GUI diff against 2 vars in the repl"
@@ -164,7 +201,30 @@
           (format \"%%s/%%s (%%s:%%d)\" (:ns i) (:name i) (:file  i) (:line i)))" 
      (cider-symbol-at-point))))
 
-  
+(defun my-browser-ns-at-point ()
+  "Browse the clojure namespace at point"
+  (interactive)
+  (cider-browse-ns
+   (cider-symbol-at-point)))
+
+(defun my-qualify-keyword (sym)
+  (if (string-match-p "::" sym)
+      (replace-regexp-in-string  "::" (concat ":" (clojure-find-ns) "/")  sym)
+    sym))
+
+(defun my-browser-spec-at-point ()
+  "Browse the clojure namespace at point"
+  (interactive)
+  (cider-browse-spec
+   (my-qualify-keyword (cider-symbol-at-point))))
+
+(defun my-spec-example-at-point ()
+  (interactive)
+  (my-run-in-nrepl (format "(do 
+                              (require 'clojure.spec)
+                              (second (first (clojure.spec/exercise s))))"
+			   (my-qualify-keyword (cider-symbol-at-point)))))
+
 (defun my-start-pedestal ()
   (interactive)
   (my-run-in-nrepl
@@ -246,11 +306,18 @@
   (local-set-key (kbd "C-c M-t") 'cider-toggle-trace-var)
   (local-set-key (kbd "C-c M-o") 'cider-repl-clear-buffer)  
   (local-set-key (kbd "M-h") 'mark-sexp)
-)
+  (local-set-key (kbd "C-c C-n") 'my-browser-ns-at-point)
+  (local-set-key (kbd "C-c C-s") 'my-browser-spec-at-point))
+
+(defun enable-my-cider-keys ()
+  (interactive)
+  ;;(define-key cider-mode-map (kbd "C-c C-z") 'my-clojure-switch-to-repl)
+  )
 
 
 ;;(add-hook 'nrepl-mode-hook 'enable-my-clojure-keys)
 (add-hook 'cider-mode-hook 'enable-my-clojure-keys)
+(add-hook 'cider-mode-hook 'enable-my-cider-keys)
 (add-hook 'clojure-mode-hook 'enable-my-clojure-keys)
 (add-hook 'cider-repl-mode-hook 'enable-my-clojure-keys)
 
@@ -292,9 +359,21 @@
 
 ;;(load-library "troncle")
 
+
 (setq cider-cljs-lein-repl
 	"(do (require 'figwheel-sidecar.repl-api)
          (figwheel-sidecar.repl-api/start-figwheel!)
          (figwheel-sidecar.repl-api/cljs-repl))")
+
+;; (defun my-clojure-switch-to-repl ()
+;;   (interactive)
+
+;;   (let* ((buffer-dir (clojure-project-dir (file-name-directory buffer-file-name)))
+;; 	 (repl-dir (clojure-project-dir (cider-current-dir))))
+;;     (insert "Project: " buffer-dir "\nRepl: " repl-dir)))
+
+;; my-cider-switch-to-repl-buffer
+
+
 
 (provide 'my-clojure)
