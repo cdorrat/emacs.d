@@ -9,7 +9,7 @@
         ("todo" . "~/todo.txt" )
         ("init" . "~/.emacs.d/init.el" )
 	("lein" . "~/.lein/profiles.clj")
-	("watch-todo" . "~/src/clojure/watch-docs/todo.org")
+	("cogent-todo" . "~/work/cogent/todo.org")
         ))
 
 (defun xah-open-file-fast (openCode)

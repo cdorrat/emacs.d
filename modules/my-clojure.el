@@ -20,8 +20,8 @@
 (add-hook 'clojurescript-mode-hook 'paredit-mode)
 
 ;; clj-refactor support
-(require 'clj-refactor)
-(require 'cider-hydra)
+;;(require 'clj-refactor)
+;;(require 'cider-hydra)
 ;;(require 'sayid)
 ;;(cider-hydra-on)
 

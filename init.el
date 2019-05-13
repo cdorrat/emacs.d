@@ -1,16 +1,15 @@
 ;; (set-face-attribute 'default nil :height 120)
 ;; "Essential PragmataPro" -> default face?
 ;; "Droid Sans Mono"
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Essential PragmataPro")))))
 
-
-(set-face-attribute 'default nil :height 120) 
+(set-face-attribute 'default nil :height 160)
 (set-face-attribute 'default nil :family "Hack")
 ;;(set-face-attribute 'default nil :family "Essential PragmataPro")
 
@@ -72,8 +71,10 @@
 			   company
 			   dash-at-point
 			   elpy
+			   ensime
 			   exec-path-from-shell
 			   flycheck
+			   haskell-mode
 			   jedi
 			   py-autopep8
 			   py-yapf
@@ -81,6 +82,7 @@
 			   hydra
 			   key-chord
 			   magit
+			   magit-gh-pulls
 			   markdown-mode
 			   multiple-cursors
 			   org-bullets
@@ -97,17 +99,22 @@
 			   helm-ag
 			   iedit
 			   itail
-			   jump-char
+			   indium
+			   jump-char			   
 			   nxml
 			   restclient
 			   restclient-helm
 			   package
 			   paredit
 			   paredit-menu
+			   repl-toggle
 			   s
 			   sass-mode
-			   sayid
+			   sbt-mode
+			   scala-mode
+			   ;;sayid
 			   string-inflection
+			   tide
 			   tramp
 			   workgroups
 			   wsd-mode
@@ -118,6 +125,7 @@
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-pinned-packages '(ensime . "melpa-stable") t)
 ;; (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
 ;; (add-to-list 'package-pinned-packages '(clojure-mode . "melpa-stable") t)
 (package-initialize)
@@ -174,12 +182,12 @@
 
 (require 'ob)
 
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((clojure . t)
-   (sh . t)
-   (emacs-lisp . t)
-   (sql . t)))
+;; (org-babel-do-load-languages
+;;  'org-babel-load-languages
+;;  '((clojure . t)
+;;    (sh . t)
+;;    (emacs-lisp . t)
+;;    (sql . t)))
 
 (setq org-babel-clojure-backend 'cider)
 
@@ -191,8 +199,8 @@
       org-support-shift-select 'always)
 
 ;; Useful keybindings when using Clojure from Org
-(org-defkey org-mode-map "\C-x\C-e" 'cider-eval-last-sexp)
-(org-defkey org-mode-map "\C-c\C-d" 'cider-doc)
+;; (org-defkey org-mode-map "\C-x\C-e" 'cider-eval-last-sexp)
+;; (org-defkey org-mode-map "\C-c\C-d" 'cider-doc)
 
 (require 'org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
@@ -251,7 +259,7 @@
   (interactive)
   (make-frame-on-display "10.1.1.9:0"))
 
-(require 'my-ess)
+;;(require 'my-ess)
 
 ;; ===================================================================================================
 (require 'nxml-mode)
@@ -309,14 +317,14 @@
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+ ;; If there is more than one, they won't work right. 
  '(magit-bury-buffer-function (quote magit-mode-quit-window))
  '(magit-dispatch-arguments nil)
  '(magit-git-executable "/usr/local/bin/git")
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
    (quote
-    (minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode sayid less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))))
+    (ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))))
 
 ;; ===================================================================================================
 (require 'multiple-cursors)
@@ -592,13 +600,6 @@ Git gutter:
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Hack")))))
-
 
 ;; ===================================================================================================
 ;; org mode setup
@@ -650,10 +651,6 @@ Git gutter:
 (workgroups-mode 1)     ; Activate workgroups
 (unless (file-directory-p "~/.emacs_files")
   (mkdir "~/.emacs_files"))
-
-(when (file-exists-p wg-default-session-file)
-  (wg-load wg-default-session-file))
-
 
 (eval-after-load "ediff"
   '(progn
@@ -742,19 +739,13 @@ Work with trello boards:
 ;;
 (require 'restclient-helm)
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 (require 'dash-at-point)
 (global-set-key (kbd "<f12> s") 'dash-at-point) 
 
 
-(require 'magit-gh-pulls)
-(add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
+;; disable gh pull support for the moment
+;;(require 'magit-gh-pulls)
+;; (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
 
 
 (global-set-key (kbd "C-S-k") 'fixup-whitespace)
@@ -808,4 +799,14 @@ Work with trello boards:
 
 (global-set-key (kbd "M-+") 'my-toggle-big-font)
 
+;; scala config
+(require 'my-scala)
+
+;; typescript support
+(require 'my-typescript)
+(global-set-key (kbd "<f12> c") 'compile)
+
+;; load workgroups last so all our modes are loaded
+(when (file-exists-p wg-default-session-file)
+  (wg-load wg-default-session-file))
 
