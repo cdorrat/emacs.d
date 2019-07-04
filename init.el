@@ -64,6 +64,8 @@
 
 (defvar cdorrat/packages '(
 			   ag
+			   anaconda-mode
+			   company-anaconda
 			   cl
 			   clj-refactor
 			   cider-hydra
@@ -326,7 +328,7 @@
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
    (quote
-    (web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))))
+    (company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))))
 
 ;; ===================================================================================================
 (require 'multiple-cursors)
@@ -807,6 +809,8 @@ Work with trello boards:
 ;; typescript support
 (require 'my-typescript)
 (global-set-key (kbd "<f12> c") 'compile)
+
+(require 'my-python)
 
 ;; load workgroups last so all our modes are loaded
 (when (file-exists-p wg-default-session-file)
