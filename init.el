@@ -66,28 +66,31 @@
 			   ag
 			   anaconda-mode
 			   company-anaconda
-			   cl
+			   ;;cl
 			   clj-refactor
 			   cider-hydra
 			   command-log-mode
 			   company
 			   dash-at-point
 			   elpy
-			   ensime
+			   ;;ensime
 			   exec-path-from-shell
 			   flycheck
 			   haskell-mode
 			   jedi
+			   jq-mode
 			   py-autopep8
 			   py-yapf
 			   helm-projectile
 			   hydra
+			   hyperbole
 			   key-chord
 			   magit
 			   magit-gh-pulls
 			   markdown-mode
 			   multiple-cursors
 			   org-bullets
+				org-roam
 			   org-trello
 			   projectile
 			   ace-jump-mode
@@ -104,16 +107,16 @@
 			   indium
 			   jump-char			   
 			   nxml
-			   restclient
-			   restclient-helm
+			   ;; restclient - using custom one in modules
+			   ;;restclient-helm
 			   package
 			   paredit
 			   paredit-menu
 			   repl-toggle
 			   s
 			   sass-mode
-			   sbt-mode
-			   scala-mode
+			   ;;sbt-mode
+			   ;;scala-mode
 			   ;;sayid
 			   string-inflection
 			   tide
@@ -128,7 +131,7 @@
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-pinned-packages '(ensime . "melpa-stable") t)
+;;(add-to-list 'package-pinned-packages '(ensime . "melpa-stable") t)
 ;; (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
 ;; (add-to-list 'package-pinned-packages '(clojure-mode . "melpa-stable") t)
 (package-initialize)
@@ -210,6 +213,15 @@
 ;; No timeout when executing calls on Cider via nrepl
 (setq org-babel-clojure-nrepl-timeout nil)
 
+
+(setq org-plantuml-jar-path (expand-file-name "~/bin/plantuml.jar"))
+(add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((plantuml . t)
+   (clojure . t)
+;;   (sh . t)
+   (emacs-lisp . t)))
 
 ;; ===================================================================================================
 ;; jump-char
@@ -321,14 +333,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(flycheck-eslint-args (quote ("--fix")))
- '(magit-bury-buffer-function (quote magit-mode-quit-window))
+ '(flycheck-eslint-args '("--fix"))
+ '(helm-ag-use-agignore t)
+ '(magit-bury-buffer-function 'magit-mode-quit-window)
  '(magit-dispatch-arguments nil)
  '(magit-git-executable "/usr/local/bin/git")
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
-   (quote
-    (company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift restclient restclient-helm yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))))
+   '(plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode)))
 
 ;; ===================================================================================================
 (require 'multiple-cursors)
@@ -623,6 +635,8 @@ Git gutter:
       org-src-fontify-natively t
       org-confirm-babel-evaluate nil)
 
+(org-defkey org-mode-map (kbd "M-RET")  'org-meta-return)
+(org-defkey org-mode-map (kbd "<return>")  'org-return)
 
 (put 'narrow-to-region 'disabled nil)
 
@@ -741,7 +755,7 @@ Work with trello boards:
 
 ;; ===================================================================================================
 ;;
-(require 'restclient-helm)
+
 
 (require 'dash-at-point)
 (global-set-key (kbd "<f12> s") 'dash-at-point) 
@@ -804,7 +818,7 @@ Work with trello boards:
 (global-set-key (kbd "M-+") 'my-toggle-big-font)
 
 ;; scala config
-(require 'my-scala)
+;;(require 'my-scala)
 
 ;; typescript support
 (require 'my-typescript)
@@ -812,7 +826,25 @@ Work with trello boards:
 
 (require 'my-python)
 
+(load "~/.finda/integrations/emacs/finda.el")
+(require 'hyperbole)
+
 ;; load workgroups last so all our modes are loaded
 (when (file-exists-p wg-default-session-file)
   (wg-load wg-default-session-file))
 
+(defun my-recompile-all-packages ()
+  (interactive)
+  (byte-recompile-directory user-init-dir 0))
+
+(defun my-insert-uuid ()
+  (interactive)
+  (insert (string-trim (shell-command-to-string "uuidgen"))))
+
+;; restclient dev
+ (add-to-list 'load-path (concat user-init-dir  "modules/restclient.el"))
+(require 'restclient)
+(require 'restclient-helm)
+(require 'restclient-jq)
+
+(require 'my-org-roam)
