@@ -13,4 +13,19 @@
 ;; org-store-link / org-insert-link
 (setq org-roam-directory "~/Documents/docs/roam")
 
+(setq org-roam-capture-templates
+      '(("d" "default" plain (function org-roam--capture-get-point)
+	 "%?"
+	 :file-name "%<%Y%m%d%H%M%S>-${slug}"
+	 :head "#+title: ${title}\n"
+	 :unnarrowed t)
+
+	("c" "coding" plain (function org-roam--capture-get-point)
+	 "%?"
+	 :file-name "coding/%<%Y%m%d%H%M%S>-${slug}"
+	 :head "#+title: ${title}\n#+roam_tags: \n"
+	 :unnarrowed t)
+	)
+      )
+
 (provide 'my-org-roam)

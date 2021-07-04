@@ -186,6 +186,8 @@
 (require 'setup-paredit)
 (require 'paredit-menu)
 
+;; ===================================================================================================
+;; setup org-mode
 (require 'ob)
 
 ;; (org-babel-do-load-languages
@@ -201,8 +203,16 @@
 (setq org-edit-src-content-indentation 0
       org-src-tab-acts-natively t
       org-src-fontify-natively t
-       org-confirm-babel-evaluate nil
+      org-confirm-babel-evaluate nil
       org-support-shift-select 'always)
+
+;; Put the following at teh top of your org file
+;; then inline images will auto-reload on C-c C-c in source blocks
+;; #+STARTUP: inlineimages
+(add-hook 'org-babel-after-execute-hook
+          (lambda ()
+            (when org-inline-image-overlays
+              (org-redisplay-inline-images))))
 
 ;; Useful keybindings when using Clojure from Org
 ;; (org-defkey org-mode-map "\C-x\C-e" 'cider-eval-last-sexp)
@@ -226,7 +236,7 @@
 ;; ===================================================================================================
 ;; jump-char
 
-(require 'fast-load)
+(require 'my-fast-load)
 (global-set-key [(f8)] 'xah-open-file-fast)
 
 
@@ -340,7 +350,8 @@
  '(magit-git-executable "/usr/local/bin/git")
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
-   '(plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode)))
+   '(plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))
+ '(safe-local-variable-values '((cider-preferred-build-tool . "lein"))))
 
 ;; ===================================================================================================
 (require 'multiple-cursors)
