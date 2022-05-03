@@ -126,18 +126,18 @@
 (defun my-read-var-name (prompt)
   "read the name of a var with completion"
    (completing-read prompt nil ;;(ac-nrepl-candidates-vars)
-		    nil nil (or (nrepl-sexp-at-point)
+		    nil nil (or (cider-sexp-at-point)
 				(save-excursion
 				  (unless (equal (string (char-before)) " ")
 				    (backward-char)
-				    (nrepl-sexp-at-point))))))
+				    (cider-sexp-at-point))))))
 
 (defun my-inspect-tree (v)
   "Inspect a var with clojure.inspector/inspect-tree"
   (interactive
    (list 
     (my-read-var-name "Var to inspect: ")))
-  (nrepl-interactive-eval (format "(do (require 'clojure.inspector) 
+  (cider-interactive-eval (format "(do (require 'clojure.inspector) 
                                      (clojure.inspector/inspect-tree %s))" v)))
 
 (defun my-inspect (v)
@@ -145,7 +145,7 @@
   (interactive
    (list 
     (my-read-var-name "Var to inspect: ")))
-  (nrepl-inspect v))
+  (cider-inspect v))
 
 
 (defun my-load-debug-packages ()
@@ -187,9 +187,10 @@
   "Evaluate the given FORM and print value in minibuffer."
   (remove-overlays (point-min) (point-max) 'cider-note-p t)
   (let ((buffer (current-buffer)))
-    (nrepl-send-string form
-                       (my-clipboard-eval-handler buffer)
-                       (cider-current-ns))))
+    (nrepl-request:eval form
+			(my-clipboard-eval-handler buffer)
+			(cider-current-repl)
+			(cider-current-ns))))
 
 
 (defun my-copy-sym-path () 
