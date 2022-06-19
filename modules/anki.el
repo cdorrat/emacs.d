@@ -117,7 +117,7 @@
   (make-local-variable 'anki-card-vals)
   (anki-mode)
   (setq anki-card-vals (make-hash-table :test 'equal))
-  (puthash :language "R" anki-card-vals)
+  (puthash :language "Go" anki-card-vals)
   
   (let ((inhibit-read-only t))
     (erase-buffer))  
@@ -154,11 +154,14 @@
 			   (puthash :language (widget-value w) anki-card-vals))
 		 :value anki-default-code-language
 		 :help-echo "Langauge used for syntax highlighting"
-		 '(choice-item "R")
 		 '(choice-item "Clojure")
+		 '(choice-item "Go")
 		 '(choice-item "Lisp")
+		 '(choice-item "R")
 ;;		 '(editable-field :menu-tag "R" "Clojure")
 		 )
+ 
+
  
 
 

@@ -63,6 +63,10 @@
 
 
 (defvar cdorrat/packages '(
+			   ;;go-mode
+			   ;;yasnippet
+			   ;;lsp-mode
+			   ;;lsp-ui
 			   ag
 			   anaconda-mode
 			   company-anaconda
@@ -130,7 +134,7 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 ;;(add-to-list 'package-pinned-packages '(ensime . "melpa-stable") t)
 ;; (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
 ;; (add-to-list 'package-pinned-packages '(clojure-mode . "melpa-stable") t)
@@ -347,10 +351,10 @@
  '(helm-ag-use-agignore t)
  '(magit-bury-buffer-function 'magit-mode-quit-window)
  '(magit-dispatch-arguments nil)
- '(magit-git-executable "/usr/local/bin/git")
+ '(magit-git-executable "/usr/bin/git")
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
-   '(plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))
+   '(gorepl-mode flycheck lsp-mode lsp-ui yasnippet go-mode plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))
  '(safe-local-variable-values '((cider-preferred-build-tool . "lein"))))
 
 ;; ===================================================================================================
@@ -859,3 +863,28 @@ Work with trello boards:
 (require 'restclient-jq)
 
 (require 'my-org-roam)
+
+;; go
+(setq exec-path
+      (append exec-path 
+	      (list (concat (substring  (shell-command-to-string "go env GOPATH") 0 -1) "/bin"))))
+
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 1)
+
+;; Go - lsp-mode
+(require 'go-mode)
+(require 'gorepl-mode)
+
+;; Set up before-save hooks to format buffer and add/delete imports.
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
+;; Start LSP Mode and YASnippet mode
+(add-hook 'go-mode-hook #'lsp-deferred)
+(add-hook 'go-mode-hook #'yas-minor-mode)
+(add-hook 'go-mode-hook #'gorepl-mode)
+
+(setq-default tab-width 3)
