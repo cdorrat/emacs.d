@@ -64,11 +64,13 @@
 
 (defvar cdorrat/packages '(
 			   ;;go-mode
+			   ;;gorepl-mode
 			   ;;yasnippet
 			   ;;lsp-mode
 			   ;;lsp-ui
 			   ag
 			   anaconda-mode
+			   avy
 			   company-anaconda
 			   ;;cl
 			   clj-refactor
@@ -111,11 +113,12 @@
 			   indium
 			   jump-char			   
 			   nxml
-			   ;; restclient - using custom one in modules
-			   ;;restclient-helm
+			   restclient
+			   restclient-helm
 			   package
 			   paredit
 			   paredit-menu
+			   protobuf-mode
 			   repl-toggle
 			   s
 			   sass-mode
@@ -141,9 +144,9 @@
 (package-initialize)
 
 (defun cdorrat/packages-installed-p ()
-  (loop for pkg in cdorrat/packages
-        when (not (package-installed-p pkg)) do (return nil)
-        finally (return t)))
+  (cl-loop for pkg in cdorrat/packages
+        when (not (package-installed-p pkg)) do (cl-return nil)
+        finally (cl-return t)))
 
 (unless (cdorrat/packages-installed-p)
   (message "%s" "Refreshing package database...")
@@ -228,7 +231,9 @@
 (setq org-babel-clojure-nrepl-timeout nil)
 
 
-(setq org-plantuml-jar-path (expand-file-name "~/bin/plantuml.jar"))
+(setq org-plantuml-jar-path
+      (replace-regexp-in-string "\n$" ""
+				(shell-command-to-string "brew list plantuml | grep plantuml.jar")))
 (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -351,10 +356,10 @@
  '(helm-ag-use-agignore t)
  '(magit-bury-buffer-function 'magit-mode-quit-window)
  '(magit-dispatch-arguments nil)
- '(magit-git-executable "/usr/bin/git")
+ '(magit-git-executable "/opt/homebrew/bin/git")
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
-   '(gorepl-mode flycheck lsp-mode lsp-ui yasnippet go-mode plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))
+   '(protobuf-mode dap-mode gorepl-mode flycheck lsp-mode lsp-ui yasnippet go-mode plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))
  '(safe-local-variable-values '((cider-preferred-build-tool . "lein"))))
 
 ;; ===================================================================================================
@@ -809,10 +814,10 @@ Work with trello boards:
 
 ;;(require 'my-minizinc)
 
-(add-to-list 'load-path (concat user-init-dir  "modules/minizinc-mode"))
-(require 'minizinc-mode)
-(add-to-list 'auto-mode-alist '("\\.mzn\\'" . minizinc-mode))
-(add-to-list 'auto-mode-alist '("\\.dzn\\'" . minizinc-mode))
+;; (add-to-list 'load-path (concat user-init-dir  "modules/minizinc-mode"))
+;; (require 'minizinc-mode)
+;; (add-to-list 'auto-mode-alist '("\\.mzn\\'" . minizinc-mode))
+;; (add-to-list 'auto-mode-alist '("\\.dzn\\'" . minizinc-mode))
 
 ;; setup sql mode
 (require 'sql)
@@ -836,12 +841,12 @@ Work with trello boards:
 ;;(require 'my-scala)
 
 ;; typescript support
-(require 'my-typescript)
-(global-set-key (kbd "<f12> c") 'compile)
+;; (require 'my-typescript)
+;; (global-set-key (kbd "<f12> c") 'compile)
 
 (require 'my-python)
 
-(load "~/.finda/integrations/emacs/finda.el")
+;;(load "~/.finda/integrations/emacs/finda.el")
 (require 'hyperbole)
 
 ;; load workgroups last so all our modes are loaded
@@ -857,13 +862,24 @@ Work with trello boards:
   (insert (string-trim (shell-command-to-string "uuidgen"))))
 
 ;; restclient dev
- (add-to-list 'load-path (concat user-init-dir  "modules/restclient.el"))
+;; (add-to-list 'load-path (concat user-init-dir  "modules/restclient.el"))
 (require 'restclient)
 (require 'restclient-helm)
-(require 'restclient-jq)
+;;(require 'restclient-jq)
 
-(require 'my-org-roam)
+;;(require 'my-org-roam)
 
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((plantuml . t)
+   (clojure . t)
+   (shell . t)
+   (sql . t)
+   (emacs-lisp . t)))
+
+(require 'my-block nil t)
+(require 'protobuf-mode)
 ;; go
 (setq exec-path
       (append exec-path 
@@ -875,6 +891,7 @@ Work with trello boards:
 ;; Go - lsp-mode
 (require 'go-mode)
 (require 'gorepl-mode)
+(require 'dap-dlv-go)
 
 ;; Set up before-save hooks to format buffer and add/delete imports.
 (defun lsp-go-install-save-hooks ()
@@ -886,5 +903,88 @@ Work with trello boards:
 (add-hook 'go-mode-hook #'lsp-deferred)
 (add-hook 'go-mode-hook #'yas-minor-mode)
 (add-hook 'go-mode-hook #'gorepl-mode)
+(add-hook 'go-mode-hook (lambda ()
+			  (setq tab-width 3)))
 
-(setq-default tab-width 3)
+
+(defun mygo/switch-to-most-recent-go-buffer ()
+  (when-let ((go-source-buffer (seq-find (lambda (buf)
+				      (string-suffix-p ".go" (buffer-name buf) 't))
+					 (buffer-list))))
+    (switch-to-buffer-other-window go-source-buffer)))
+
+(defun mygo/toggle-switch-to-repl ()
+  (interactive)
+  (if (string= gorepl-buffer (buffer-name))
+      (mygo/switch-to-most-recent-go-buffer)
+    (and
+	(gorepl--run-gore '())
+	(switch-to-buffer-other-window (get-buffer gorepl-buffer)))))
+
+(defun mygo/repl-eval-func ()
+  (interactive)
+  (save-excursion
+    (let ((begin (progn (go-beginning-of-defun) (point)))
+	  (end (progn (go-end-of-defun) (point))))
+      (set-mark begin)
+      (goto-char end)
+      (call-interactively 'gorepl-eval-region)
+      (deactivate-mark))))
+
+(defun mygo/repl-eval-line-or-region (num-lines)
+  (interactive "p")
+  (if (use-region-p)
+      (progn
+       (gorepl-eval-region (region-beginning) (region-end))
+       (deactivate-mark))
+    (call-interactively 'gorepl-eval-line num-lines)))
+
+(defun mygo/repl-load-current-file ()
+  (interactive)
+  (call-interactively 'gorepl-run-load-current-file)
+  (mygo/toggle-switch-to-repl))
+
+
+ (defhydra hydra-go (:color blue :hint nil :idle 0)   
+   "
+   Docs                Search                Tools             Repl               Debugger    
+ ╭──────────────────────────────────────────────────────────────────────────────────────────────────────╯
+   [_dp_] doc at point  [_fd_] declaration    [_a_]  add import  [_l_]  load file   [_dd_] debug
+   [_S_]  search docs   [_i_]  implementation [_ff_] gofmt       [_R_]  run         [_dl_] rerun last
+   [_s_]  dash docs     [_r_]  references     [_c_]  coverage    [_Q_] quit        
+                      [_t_]  type dec       [_p_]  set project 
+   ────────────────────────────────────────────────────────────────────────────────────────────────────
+        "
+   ("dp" godoc-at-point)
+   ("S" godoc)
+   ("s" dash-at-point)
+   
+   ("fd" lsp-find-declaration)
+   ("i" lsp-find-implementation)
+   ("r" lsp-find-references)
+   ("t" lsp-find-type-definition)
+
+   ("a" go-import-add)
+   ("ff" gofmt)
+   ("c" go-coverage)
+   ("p" go-set-project)
+
+   ("l" mygo/repl-load-current-file)
+   ("R" gorepl-run)
+   ("Q" gorepl-quit)
+   
+   ("dd" dap-debug)
+   ("dl" dap-debug-last))
+
+(defun mygo/bind-go-mode-keys ()
+  (interactive)
+  (local-set-key (kbd "<f12>")  'hydra-go/body)
+  (local-set-key (kbd "C-c C-z") 'mygo/toggle-switch-to-repl)
+  (local-set-key (kbd "C-M-x") 'mygo/repl-eval-func)
+  (define-key go-mode-map (kbd "C--")  'hydra-go/body)
+  (define-key go-mode-map (kbd "C-x C-e") 'mygo/repl-eval-line-or-region)
+  (define-key gorepl-mode-map (kbd "C-c C-l") 'mygo/repl-load-current-file))
+
+
+(add-hook 'go-mode-hook 'mygo/bind-go-mode-keys)
+(add-hook 'gorepl-mode-hook 'mygo/bind-go-mode-keys)
