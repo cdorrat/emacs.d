@@ -100,7 +100,6 @@
 				org-roam
 			   org-trello
 			   projectile
-			   ace-jump-mode
 			   cider
 			   dash
 			   dockerfile-mode
@@ -249,14 +248,7 @@
 (require 'my-fast-load)
 (global-set-key [(f8)] 'xah-open-file-fast)
 
-
-(require 'ace-jump-mode)
-(require 'jump-char)
-
-(global-set-key [(meta m)] 'jump-char-forward)
-(global-set-key [(shift meta m)] 'jump-char-backward)
-(global-set-key (quote [67108912]) 'ace-jump-mode) ;; Ctrl-0
-(global-unset-key "")
+ (global-unset-key "")
 
 ;;
 ;; eshell
@@ -360,7 +352,7 @@
  '(magit-git-executable "/opt/homebrew/bin/git")
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
-   '(helm-lsp protobuf-mode dap-mode gorepl-mode flycheck lsp-mode lsp-ui yasnippet go-mode plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode ace-jump-mode))
+   '(helm-lsp protobuf-mode dap-mode gorepl-mode flycheck lsp-mode lsp-ui yasnippet go-mode plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode))
  '(safe-local-variable-values '((cider-preferred-build-tool . "lein"))))
 
 ;; ===================================================================================================
@@ -392,9 +384,6 @@
 (global-set-key (quote [201326633]) 'scroll-up)
 (global-set-key "" (quote call-last-kbd-macro))
 (global-set-key (quote [f9]) 'magit-status)
-(global-set-key [(meta m)] 'jump-char-forward)
-(global-set-key [(shift meta m)] 'jump-char-backward)
-(global-set-key (quote [67108912]) 'ace-jump-mode) ;; Ctrl-0
 (global-unset-key "")
 
 ;; ===================================================================================================
@@ -670,7 +659,17 @@ Git gutter:
 
 
 (require 'iedit) ;; C-; search/replace
-(global-set-key (kbd "C-M-;") 'iedit-toggle-selection)
+(custom-set-variables '(iedit-toggle-key-default (kbd "C-0")))
+(global-set-key (kbd "M-0") 'iedit-toggle-selection)
+
+;; fast navigation with avy & 
+(require 'avy)
+(global-set-key (kbd "C-;") 'avy-goto-char-timer)
+
+(require 'jump-char)
+(global-set-key [(meta m)] 'jump-char-forward)
+(global-set-key [(shift meta m)] 'jump-char-backward)
+
 ;; ===================================================================================================
 ;; support for loading & saving window/buffer config
  (require 'workgroups)
