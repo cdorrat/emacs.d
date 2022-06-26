@@ -660,6 +660,7 @@ Git gutter:
 
 (require 'iedit) ;; C-; search/replace
 (custom-set-variables '(iedit-toggle-key-default (kbd "C-0")))
+(global-set-key (kbd "C-0") 'iedit-mode)
 (global-set-key (kbd "M-0") 'iedit-toggle-selection)
 
 ;; fast navigation with avy & 
