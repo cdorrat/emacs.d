@@ -131,7 +131,12 @@
 			   web-mode
 			   workgroups
 			   wsd-mode
-			   yaml-mode)
+			   yaml-mode
+			   ;; added for chat-gpt
+			   use-package
+			   pretty-hydra
+			   all-the-icons
+			   )
 
   (require 'cl))
 (require 'package)
@@ -347,12 +352,13 @@
  ;; If there is more than one, they won't work right.
  '(flycheck-eslint-args '("--fix"))
  '(helm-ag-use-agignore t)
+ '(iedit-toggle-key-default (kbd "C-0"))
  '(magit-bury-buffer-function 'magit-mode-quit-window)
  '(magit-dispatch-arguments nil)
  '(magit-git-executable "/opt/homebrew/bin/git")
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
-   '(helm-lsp protobuf-mode dap-mode gorepl-mode flycheck lsp-mode lsp-ui yasnippet go-mode plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode))
+   '(all-the-icons pretty-hydra use-package helm-lsp protobuf-mode dap-mode gorepl-mode flycheck lsp-mode lsp-ui yasnippet go-mode plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode))
  '(safe-local-variable-values '((cider-preferred-build-tool . "lein"))))
 
 ;; ===================================================================================================
@@ -659,7 +665,7 @@ Git gutter:
 
 
 (require 'iedit) ;; C-; search/replace
-(custom-set-variables '(iedit-toggle-key-default (kbd "C-0")))
+
 (global-set-key (kbd "C-0") 'iedit-mode)
 (global-set-key (kbd "M-0") 'iedit-toggle-selection)
 
@@ -669,7 +675,7 @@ Git gutter:
 
 (require 'jump-char)
 (global-set-key [(meta m)] 'jump-char-forward)
-(global-set-key [(shift meta m)] 'jump-char-backward)
+(global-set-key [(shift meta m)] 'jump-chadr-backward)
 
 ;; ===================================================================================================
 ;; support for loading & saving window/buffer config
@@ -882,4 +888,27 @@ Work with trello boards:
 (require 'my-block nil t)
 (require 'protobuf-mode)
 (require 'my-go)
+
+;; chatgpt setup
+(add-to-list 'load-path (concat modules-path "chatgpt-arcana.el"))
+(require 'chatgpt-arcana)
+
+(defun read-env-file (filename)
+  "Reads environment variables from a file and sets them in the current process."
+  (interactive "fEnter file name: ")
+  (when (file-exists-p filename)
+    (with-temp-buffer
+      (insert-file-contents filename)
+      (while (not (eobp))
+        (let* ((line (thing-at-point 'line))
+               (parts (split-string line "=" nil "\n"))
+               (key (car parts))
+               (value (cadr parts)))
+          (when (and key value)
+            (setenv key value)))
+        (forward-line)))))
+
+(read-env-file "~/.openai")
+(setq chatgpt-arcana-api-key (getenv "OPENAI_API_KEY")))
+
 
