@@ -98,7 +98,8 @@
 			   multiple-cursors
 			   org-bullets
 				org-roam
-			   org-trello
+				;;				org-trello
+				pretty-hydra
 			   projectile
 			   cider
 			   dash
@@ -122,9 +123,6 @@
 			   repl-toggle
 			   s
 			   sass-mode
-			   ;;sbt-mode
-			   ;;scala-mode
-			   ;;sayid
 			   string-inflection
 			   tide
 			   tramp
@@ -142,6 +140,7 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '( "jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/") t)
 ;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 ;;(add-to-list 'package-pinned-packages '(ensime . "melpa-stable") t)
 ;; (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
@@ -476,63 +475,62 @@
    ("q" nil :exit true)
    ("W" make-frame-command)))
 
- (defhydra hydra-projectile (:color blue :hint nil :idle 0)
-   "
-                                                                                                                          ╭────────────┐                   ╭────────┐
-   Files             Search          Buffer             Do                Other Window      Run             Cache         │ Projectile │    Do             │ Fixmee │
- ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────╯  ╭────────────────┴────────╯
-   [_f_] file          [_a_] ag prj      [_b_] switch         [_gg_] magit        [_F_] file          [_U_] test        [_kc_] clear         [_x_] TODO & FIXME
-   [_l_] file dwim     [_A_] ag file     [_v_] show all       [_p_] commander     [_L_] dwim          [_m_] compile     [_kk_] add current   [_X_] toggle
-   [_r_] recent file   [_s_] occur       [_V_] ibuffer        [_i_] info          [_D_] dir           [_c_] shell       [_ks_] cleanup
-   [_d_] dir           [_S_] replace     [_K_] kill all       [_gd_] vc diff      [_O_] other         [_C_] command     [_kd_] remove
-    ^ ^                 ^ ^              [_y_] kill ring       ^ ^                [_B_] buffer
-   [_P_] Switch Project
-  --------------------------------------------------------------------------------
-        "
-   ("<tab>" hydra-master/body "back")
-   ("<ESC>" nil "quit")
-   ("q" nil "quit")
-   ("a"   helm-ag-project-root)
-   ("A"   helm-ag-this-file)
-   ("b"   projectile-switch-to-buffer)
-   ("B"   projectile-switch-to-buffer-other-window)
-   ("c"   projectile-run-async-shell-command-in-root)
-   ("C"   projectile-run-command-in-root)
-   ("d"   projectile-find-dir)
-   ("D"   projectile-find-dir-other-window)
-   ("f"   projectile-find-file)
-   ("F"   projectile-find-file-other-window)
-   ("gg"  projectile-vc)
-   ("gd"  vc-diff)
-   ("h"   projectile-dired)
-   ("i"   projectile-project-info)
-   ("kc"  projectile-invalidate-cache)
-   ("kd"  projectile-remove-known-project)
-   ("kk"  projectile-cache-current-file)
-   ("P"   projectile-switch-project)
-   ("K"   projectile-kill-buffers)
-   ("ks"  projectile-cleanup-known-projects)
-   ("l"   projectile-find-file-dwim)
-   ("L"   projectile-find-file-dwim-other-window)
-   ("m"   projectile-compile-project)
-   ("o"   projectile-find-other-file)
-   ("O"   projectile-find-other-file-other-window)
-   ("p"   projectile-commander)
-   ("r"   projectile-recentf)
-   ("s"   projectile-multi-occur)
-   ("S"   projectile-replace)
-   ("t"   projectile-find-tag)
-   ("T"   projectile-regenerate-tags)
-   ("u"   projectile-find-test-file)
-   ("U"   projectile-test-project)
-   ("v"   projectile-display-buffer)
-   ("V"   projectile-ibuffer)
-   ("X"   fixmee-mode)
-   ("x"   fixmee-view-listing)
-   ("y"   helm-show-kill-ring "list" :color blue))
+;;  (defhydra hydra-projectile (:color blue :hint nil :idle 0)
+;;    "
+;;                                                                                                                           ╭────────────┐                   ╭────────┐
+;;    Files             Search          Buffer             Do                Other Window      Run             Cache         │ Projectile │    Do             │ Fixmee │
+;;  ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────╯  ╭────────────────┴────────╯
+;;    [_f_] file          [_a_] ag prj      [_b_] switch         [_gg_] magit        [_F_] file          [_U_] test        [_kc_] clear         [_x_] TODO & FIXME
+;;    [_l_] file dwim     [_A_] ag file     [_v_] show all       [_p_] commander     [_L_] dwim          [_m_] compile     [_kk_] add current   [_X_] toggle
+;;    [_r_] recent file   [_s_] occur       [_V_] ibuffer        [_i_] info          [_D_] dir           [_c_] shell       [_ks_] cleanup
+;;    [_d_] dir           [_S_] replace     [_K_] kill all       [_gd_] vc diff      [_O_] other         [_C_] command     [_kd_] remove
+;;     ^ ^                 ^ ^              [_y_] kill ring       ^ ^                [_B_] buffer
+;;    [_P_] Switch Project
+;;   --------------------------------------------------------------------------------
+;;         "
+;;    ("<tab>" hydra-master/body "back")
+;;    ("<ESC>" nil "quit")
+;;    ("q" nil "quit")
+;;    ("a"   helm-ag-project-root)
+;;    ("A"   helm-ag-this-file)
+;;    ("b"   projectile-switch-to-buffer)
+;;    ("B"   projectile-switch-to-buffer-other-window)
+;;    ("c"   projectile-run-async-shell-command-in-root)
+;;    ("C"   projectile-run-command-in-root)
+;;    ("d"   projectile-find-dir)
+;;    ("D"   projectile-find-dir-other-window)
+;;    ("f"   projectile-find-file);
+;;    ("F"   projectile-find-file-other-window)
+;;    ("gg"  projectile-vc)
+;;    ("gd"  vc-diff)
+;;    ("h"   projectile-dired)
+;;    ("i"   projectile-project-info)
+;;    ("kc"  projectile-invalidate-cache)
+;;    ("kd"  projectile-remove-known-project)
+;;    ("kk"  projectile-cache-current-file)
+;;    ("P"   projectile-switch-project)
+;;    ("K"   projectile-kill-buffers)
+;;    ("ks"  projectile-cleanup-known-projects)
+;;    ("l"   projectile-find-file-dwim);
+;;    ("L"   projectile-find-file-dwim-other-window)
+;;    ("m"   projectile-compile-project)
+;;    ("o"   projectile-find-other-file)
+;;    ("O"   projectile-find-other-file-other-window)
+;;    ("p"   projectile-commander)
+;;    ("r"   projectile-recentf);
+;;    ("s"   projectile-multi-occur)
+;;    ("S"   projectile-replace)
+;;    ("t"   projectile-find-tag)
+;;    ("T"   projectile-regenerate-tags)
+;;    ("u"   projectile-find-test-file)
+;;    ("U"   projectile-test-project)
+;;    ("v"   projectile-display-buffer)
+;;    ("V"   projectile-ibuffer)
+;;    ("X"   fixmee-mode)
+;;    ("x"   fixmee-view-listing)
+;;    ("y"   helm-show-kill-ring "list" :color blue))
 
-(global-set-key (kbd "C-=") 'hydra-projectile/body)
-
+;; (global-set-key (kbd "C-=") 'hydra-projectile/body)
 
 
 ;; (key-chord-define-global
@@ -753,39 +751,35 @@ Git gutter:
   )
 ;; org-trello setup
 
-(require 'org-trello)
+;;(require 'org-trello)
 
-(defun my-sync-from-trello ()
-  "pull remote trello chnages"
-  (interactive)
-  (let ((current-prefix-arg 0)) ;; emulate C-u
-    (call-interactively 'org-trello-sync-buffer)))
+;; (defun my-sync-from-trello ()
+;;   "pull remote trello chnages"
+;;   (interactive)
+;;   (let ((current-prefix-arg 0)) ;; emulate C-u
+;;     (call-interactively 'org-trello-sync-buffer)))
 
-(defhydra hydra-trello  (:color blue :hint nil :idle 0)
-  "
-Work with trello boards: 
-[_s_] Sync card     [_i_] init buffer   [_v_] View board in trello
-[_S_] Sync buffer   [_n_] create board  [_c_] View card in trello
-[_C_] Sync comments [_f_] pull changes from trello "
-  ("s" org-trello-sync-card)
-  ("S" org-trello-sync-buffer)
-  ("f" my-sync-from-trello)
-  ("C" org-trello-sync-comment)
-  ("i" org-trello-install-board-metadata)
-  ("n" org-trello-create-board-and-install-metadata)
-  ("v" org-trello-jump-to-trello-board)
-  ("c" org-trello-jump-to-trello-card))
+;; (defhydra hydra-trello  (:color blue :hint nil :idle 0)
+;;   "
+;; Work with trello boards: 
+;; [_s_] Sync card     [_i_] init buffer   [_v_] View board in trello
+;; [_S_] Sync buffer   [_n_] create board  [_c_] View card in trello
+;; [_C_] Sync comments [_f_] pull changes from trello "
+;;   ("s" org-trello-sync-card)
+;;   ("S" org-trello-sync-buffer)
+;;   ("f" my-sync-from-trello)
+;;   ("C" org-trello-sync-comment)
+;;   ("i" org-trello-install-board-metadata)
+;;   ("n" org-trello-create-board-and-install-metadata)
+;;   ("v" org-trello-jump-to-trello-board)
+;;   ("c" org-trello-jump-to-trello-card))
 
-(global-set-key (kbd "C-+")  'hydra-trello/body)
+;; (global-set-key (kbd "C-+")  'hydra-trello/body)
 
 
 
 ;; ===================================================================================================
 ;;
-
-
-(require 'dash-at-point)
-(global-set-key (kbd "<f12> s") 'dash-at-point) 
 
 
 ;; disable gh pull support for the moment
@@ -889,26 +883,41 @@ Work with trello boards:
 (require 'protobuf-mode)
 (require 'my-go)
 
-;; chatgpt setup
 (add-to-list 'load-path (concat modules-path "chatgpt-arcana.el"))
-(require 'chatgpt-arcana)
+(require 'my-chatgpt)
 
-(defun read-env-file (filename)
-  "Reads environment variables from a file and sets them in the current process."
-  (interactive "fEnter file name: ")
-  (when (file-exists-p filename)
-    (with-temp-buffer
-      (insert-file-contents filename)
-      (while (not (eobp))
-        (let* ((line (thing-at-point 'line))
-               (parts (split-string line "=" nil "\n"))
-               (key (car parts))
-               (value (cadr parts)))
-          (when (and key value)
-            (setenv key value)))
-        (forward-line)))))
+(defun gpt-uncomment-and-replace-region (beg end query)
+  (interactive "r\nsPrompt: ")
+  (uncomment-region beg end)
+  (chatgpt-arcana-replace-region query))
 
-(read-env-file "~/.openai")
-(setq chatgpt-arcana-api-key (getenv "OPENAI_API_KEY")))
+(require 'pretty-hydra)
+(pretty-hydra-define hydra-coding (:color blue :quit-key "q" :idle 0) ;; :title "Coding Tools"
+  ("File"
+   (("f" projectile-find-file "file")
+    ("l" projectile-find-file-dwim "file dwim") 
+    ("r" projectile-recentf "recent file")
+    ("i" projectile-find-dir "directory"))
+   "Search"
+   (("a"   helm-ag-project-root "ag prj")
+    ("A"   helm-ag-this-file "ag file")
+    ("s"   projectile-multi-occur "occur")
+    ("S"   projectile-replace "replace"))
+   "Buffer"
+   (("b"  projectile-switch-to-buffer "buffer")
+    ("y"   helm-show-kill-ring "kill ring")
+    ("V"  projectile-ibuffer "i-buffer")    
+    )
+   "Tools"
+   (("x" fixmee-view-listing "TODO & FIXME")
+    ("X" fixmee-mode "FIXME mode")
+    ("d" dash-at-point "Dash"))
+   "AI"
+   (("gc" chatgpt-arcana-start-chat "Start chat")
+    ("gi" chatgpt-arcana-insert-at-point "Insert at point")
+    ("gr" gpt-uncomment-and-replace-region "Replace region") ;; chatgpt-arcana-replace-region
+    ("gm" chatgpt-arcana-hydra/body "ChatGpt"))
+   ))
 
+(global-set-key (kbd "C-=") 'hydra-coding/body)
 
