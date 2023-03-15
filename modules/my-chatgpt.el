@@ -26,7 +26,7 @@
   (add-to-list 'chatgpt-arcana-system-prompts-alist
 	       `(,mode . ,(format
 			   "You are an expert professional %s programmer. \
-You may only respond with concise code unless explicitly asked. " lang))))
+You may only respond with concise code only and no explanation unless explicitly asked. " lang))))
 
 (my-gpt-add-prog-prompt 'clojure-mode "Clojure")
 (my-gpt-add-prog-prompt 'clojurescript-mode "Clojurescript")
