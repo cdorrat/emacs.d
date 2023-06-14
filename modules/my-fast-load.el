@@ -1,6 +1,8 @@
 (require 'ido)
 
-(defvar xah-filelist nil "alist for files i need to open frequently. Key is a short abbrev, Value is file path.")
+(defvar xah-filelist nil
+  "alist for files i need to open frequently.
+Key is a short abbrev, Value is file path.")
 
 (setq xah-filelist
       '(

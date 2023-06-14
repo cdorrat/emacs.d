@@ -16,7 +16,7 @@
 ;;   '(progn
 ;;      (add-to-list 'ac-modes 'cider-mode)
 ;;      (add-to-list 'ac-modes 'cider-repl-mode)))
-(add-hook 'cider-mode-hook 'subword-mode)
+(add-hook 'cider-mode-hook 'subword-mode 'paredit-mode)
 (add-hook 'clojurescript-mode-hook 'paredit-mode)
 
 ;; clj-refactor support
@@ -109,15 +109,15 @@
   
 (defun my-select-nrepl-buffer ()
   (interactive)
-  (if (string= (cider-current-repl-buffer) (buffer-name))
+  (if (string= (cider-current-repl) (buffer-name))
       (pop-to-buffer (other-buffer (current-buffer) t))      
-    (switch-to-buffer-other-window (cider-current-repl-buffer))))
+    (switch-to-buffer-other-window (cider-current-repl))))
 
 (defun my-run-in-nrepl (str)
   "Run a string in the repl by executing it in the current buffer.
   If output in the mini-buffer is ok use nrepl-interactive-eval instead"
   (interactive)
-  (with-current-buffer (get-buffer (cider-current-repl-buffer))
+  (with-current-buffer (get-buffer (cider-current-repl))
     (goto-char (point-max))    
     (insert str)
     (cider-repl-return)))
@@ -223,7 +223,7 @@
   (interactive)
   (my-run-in-nrepl (format "(do 
                               (require 'clojure.spec)
-                              (second (first (clojure.spec/exercise s))))"
+                              (second (first (clojure.spec/exercise %s))))"
 			   (my-qualify-keyword (cider-symbol-at-point)))))
 
 (defun my-start-pedestal ()
@@ -257,7 +257,7 @@
 
 (defun my-figwheel-repl ()
   (interactive)
-  (cider-connect "localhost" 7888)  
+  (cider-connect '((:host . "localhost") (:port . 7888)))  
   (my-run-in-nrepl
    (format "%s"
 	   '(do 
@@ -361,7 +361,7 @@
 ;;(load-library "troncle")
 
 
-(setq cider-cljs-lein-repl
+(setq cider-default-cljs-repl
 	"(do (require 'figwheel-sidecar.repl-api)
          (figwheel-sidecar.repl-api/start-figwheel!)
          (figwheel-sidecar.repl-api/cljs-repl))")

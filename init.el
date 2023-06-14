@@ -49,7 +49,7 @@
 
 
 ; make emacs play nicely withthe X11 clipboard
-(setq x-select-enable-clipboard t)
+(setq select-enable-clipboard t)
 ;;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 
 ; make todo.txt open in org mode automatically
@@ -63,17 +63,14 @@
 
 
 (defvar cdorrat/packages '(
-			   ;;go-mode
+			   go-mode
 			   ;;gorepl-mode
 			   ;;yasnippet
 			   ;;lsp-mode
 			   ;;lsp-ui
 			   helm-lsp
 			   ag
-			   anaconda-mode
 			   avy
-			   company-anaconda
-			   ;;cl
 			   clj-refactor
 			   cider-hydra
 			   command-log-mode
@@ -135,8 +132,7 @@
 			   pretty-hydra
 			   all-the-icons
 			   )
-
-  (require 'cl))
+)
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
@@ -192,10 +188,31 @@
 ;; (ac-flyspell-workaround)
 
 ;; =================================================================================================== 
+;; OSX specific config
+(when (eq system-type 'darwin)
+  (setq mac-option-modifier 'super)
+  (setq mac-command-modifier 'meta)
+  (set-face-attribute 'default nil :height 160)
+  (exec-path-from-shell-initialize)
+
+  (global-set-key [f11] (quote toggle-frame-fullscreen))
+  (global-set-key [C-M-f] (quote toggle-frame-fullscreen))
+  (global-set-key [home] (quote beginning-of-line))
+  (global-set-key [end] (quote end-of-line))
+  (global-set-key [C-help] (quote kill-ring-save))
+  (global-set-key [S-help] (quote yank))
+  
+  (global-set-key [M-f15] (quote wg-update-workgroup))
+  (global-set-key [f15] (quote wg-revert-workgroup))
+   
+  (require 'dash-at-point)
+  (global-set-key (kbd "<f12> s") 'dash-at-point)
+  )
+;; =================================================================================================== 
 ;; Configure clojure
 (require 'my-clojure)
 (require 'setup-paredit)
-(require 'paredit-menu)
+;; (require 'paredit-menu)
 
 ;; ===================================================================================================
 ;; setup org-mode
@@ -259,7 +276,7 @@
 ;;(local-set-key [C-up] (quote eshell-previous-matching-input-from-input))
 (require 'eshell)
 (add-hook 'eshell-mode-hook
-	  '(lambda ()
+	  #'(lambda ()
 	     (define-key eshell-mode-map [C-up] 'eshell-previous-matching-input-from-input)))
 
 ;;===================================================================================================
@@ -317,7 +334,8 @@
     (insert (my-xml-escape (current-kill 0 1)))))
 
 (defun my-xml-escape-region ()
-  "kills the current region & replaces it with an x/html escaped version, the previous text is saved in the kill ring.
+  "kills the current region & replaces it with an x/html escaped version, t
+   he previous text is saved in the kill ring.
   if no region is selected it defaults to the current nxml p (see with M-h)"
   (interactive)
   (when (not (region-active-p))
@@ -355,9 +373,9 @@
  '(magit-bury-buffer-function 'magit-mode-quit-window)
  '(magit-dispatch-arguments nil)
  '(magit-git-executable "/opt/homebrew/bin/git")
- '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
+ '(org-trello-current-prefix-keybinding "C-c o")
  '(package-selected-packages
-   '(all-the-icons pretty-hydra use-package helm-lsp protobuf-mode dap-mode gorepl-mode flycheck lsp-mode lsp-ui yasnippet go-mode plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode))
+   '(request all-the-icons pretty-hydra use-package helm-lsp protobuf-mode dap-mode gorepl-mode flycheck lsp-mode lsp-ui yasnippet go-mode plantuml-mode org-roam terraform-doc terraform-mode hyperbole  graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode))
  '(safe-local-variable-values '((cider-preferred-build-tool . "lein"))))
 
 ;; ===================================================================================================
@@ -417,7 +435,7 @@
 ;; ===================================================================================================
 (require 'projectile)
 (require 'helm-projectile)
-(projectile-global-mode)
+(projectile-mode)
 (setq projectile-completion-system 'helm)
 (helm-projectile-on)
 
@@ -435,13 +453,13 @@
 (require 'key-chord)
 (key-chord-mode 1)
 
-(require 'fixmee)
+;;(require 'fixmee)
 ;(global-fixmee-mode 1)
 
 (defun my-curr-buffer-to-cider ()
   (interactive)
   (pop-to-buffer-same-window   
-   (cider-current-repl-buffer)))
+   (cider-current-repl)))
 
 (require 'hydra)
 (key-chord-define-global
@@ -729,26 +747,7 @@ Git gutter:
 
 
 ;; ===================================================================================================
-;; OSX specific config
-(when (eq system-type 'darwin)
-  (setq mac-option-modifier 'super)
-  (setq mac-command-modifier 'meta)
-  (set-face-attribute 'default nil :height 160)
-  (exec-path-from-shell-initialize)
 
-  (global-set-key [f11] (quote toggle-frame-fullscreen))
-  (global-set-key [C-M-f] (quote toggle-frame-fullscreen))
-  (global-set-key [home] (quote beginning-of-line))
-  (global-set-key [end] (quote end-of-line))
-  (global-set-key [C-help] (quote kill-ring-save))
-  (global-set-key [S-help] (quote yank))
-  
-  (global-set-key [M-f15] (quote wg-update-workgroup))
-  (global-set-key [f15] (quote wg-revert-workgroup))
-   
-  (require 'dash-at-point)
-  (global-set-key (kbd "<f12> s") 'dash-at-point)
-  )
 ;; org-trello setup
 
 ;;(require 'org-trello)
@@ -886,10 +885,12 @@ Git gutter:
 (add-to-list 'load-path (concat modules-path "chatgpt-arcana.el"))
 (require 'my-chatgpt)
 
-(defun gpt-uncomment-and-replace-region (beg end query)
+(defun gpt-code-replace-region (beg end query)
   (interactive "r\nsPrompt: ")
   (uncomment-region beg end)
   (chatgpt-arcana-replace-region query))
+
+
 
 (require 'pretty-hydra)
 (pretty-hydra-define hydra-coding (:color blue :quit-key "q" :idle 0) ;; :title "Coding Tools"
@@ -915,9 +916,21 @@ Git gutter:
    "AI"
    (("gc" chatgpt-arcana-start-chat "Start chat")
     ("gi" chatgpt-arcana-insert-at-point "Insert at point")
-    ("gr" gpt-uncomment-and-replace-region "Replace region") ;; chatgpt-arcana-replace-region
+    ("gr" chatgpt-arcana-replace-region "Replace region") ;; 
     ("gm" chatgpt-arcana-hydra/body "ChatGpt"))
    ))
 
 (global-set-key (kbd "C-=") 'hydra-coding/body)
 
+```
+(defun download-and-parse-json (url username password)
+  (with-current-buffer (url-retrieve-synchronously url)
+    (goto-char (point-min))
+    (when (looking-at "HTTP/[0-9].[0-9] +401")
+      (let ((auth (format "Basic %s\n" (base64-encode-string (concat username ":" password))))) 
+          (url-insert (encode-coding-string auth 'iso-8859-1))
+          (url-retrieve-synchronously url)
+          (goto-char (point-min))))
+    (re-search-forward "^$" nil 'move)
+    (json-read)))
+```

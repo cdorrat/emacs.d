@@ -34,5 +34,14 @@ You may only respond with concise code only and no explanation unless explicitly
 (my-gpt-add-prog-prompt 'go-mode "Golang")
 (my-gpt-add-prog-prompt 'emacs-lisp-mode "Emacs")
 
+(defun my-chatgpt-code-replace-region (prompt)
+  "Send the selected region to the OpenAI API with PROMPT and
+replace the region with the output."
+  (interactive "sPrompt: ")
+  (let ((selected-region (buffer-substring-no-propterties (mark) (point))))
+    (let ((modified-region (chatgpt-arcana--query-api-alist `(((role . "system") (content . ,(chatgpt-arcana-get-system-prompt) ))
+							     ((role . "user") (content . ,(concat  "\n" prompt " " selected-region)))))))
+      (delete-region (mark) (point))
+      (insert modified-region))))
 
 (provide 'my-chatgpt)
