@@ -1,4 +1,6 @@
 (require 'chatgpt-arcana)
+(require 'chatgpt)
+
 
 ;; clone https://github.com/cdorrat/chatgpt-arcana.el.git in the modules dir
 
@@ -18,7 +20,21 @@
         (forward-line)))))
 
 (my-read-env-file "~/.openai")
-(setq chatgpt-arcana-api-key (getenv "OPENAI_API_KEY"))
+(defun my-openai-key-auth-source ()
+  (getenv "OPENAI_API_KEY"))
+
+(setq chatgpt-arcana-api-key (my-openai-key-auth-source))
+
+;; openai library setup
+(setq openai-key #'my-openai-key-auth-source)
+(setq openai-user "user")
+
+;; chatgpt setup
+(setq chatgpt-temperature 0.2)
+(setq chatgpt-window-prompt "")
+(setq chatgpt-model "gpt-3.5-turbo") ;; 
+;;(setq chatgpt-model "gpt-4") 
+;;(setq openai--show-log t)
 
 
 (defun my-gpt-add-prog-prompt (mode lang)

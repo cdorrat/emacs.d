@@ -137,6 +137,7 @@
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '( "jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/") t)
+
 ;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 ;;(add-to-list 'package-pinned-packages '(ensime . "melpa-stable") t)
 ;; (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
@@ -914,7 +915,8 @@ Git gutter:
     ("X" fixmee-mode "FIXME mode")
     ("d" dash-at-point "Dash"))
    "AI"
-   (("gc" chatgpt-arcana-start-chat "Start chat")
+   (("gg" chatgpt "ChatGpt buffer")
+    ("gc" chatgpt-arcana-start-chat "Start chat")
     ("gi" chatgpt-arcana-insert-at-point "Insert at point")
     ("gr" chatgpt-arcana-replace-region "Replace region") ;; 
     ("gm" chatgpt-arcana-hydra/body "ChatGpt"))
