@@ -921,7 +921,9 @@ Git gutter:
    "Tools"
    (("x" fixmee-view-listing "TODO & FIXME")
     ("X" fixmee-mode "FIXME mode")
-    ("d" dash-at-point "Dash"))
+    ("d" dash-at-point "Dash")
+    ("mb" magit-blame "Magit blame")
+    ("ml" magit-log-buffer-file "Magit changes log"))
    "AI"
    (("gg" chatgpt "ChatGpt buffer")
     ("gc" chatgpt-arcana-start-chat "Start chat")
