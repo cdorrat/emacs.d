@@ -65,6 +65,14 @@
   (call-interactively 'gorepl-run-load-current-file)
   (mygo/toggle-switch-to-repl))
 
+(defun mygo/test-project ()
+  (interactive)
+  (my-test-current-project nil))
+
+(defun mygo/race-test-project ()
+  (interactive)
+  (my-test-current-project 1))
+
 
  (defhydra hydra-go (:color blue :hint nil :idle 0)   
    "
@@ -72,9 +80,9 @@
  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────╯
    [_dp_] doc at point  [_fd_] declaration    [_a_]  add import  [_l_]  load file   [_dd_] debug
    [_S_]  search docs   [_i_]  implementation [_e_]  show errors [_R_]  run         [_dl_] rerun last
-   [_s_]  dash docs     [_r_]  references     [_ff_] gofmt       [_Q_] quit        
-                      [_t_]  type dec       [_c_]  coverage
-                      [_y_]  symbols                         [_p_]  set project
+   [_s_]  dash docs     [_r_]  references     [_k_]  flycheck    [_Q_] quit         [_db_] toggle breakpoint
+                      [_td_]  type dec      [_tt_] run tests    [_p_]  set project
+                      [_y_]  symbols        [_tr_] race tests                 
    ────────────────────────────────────────────────────────────────────────────────────────────────────
         "
    ("dp" godoc-at-point)
@@ -84,13 +92,16 @@
    ("fd" lsp-find-declaration)
    ("i" lsp-find-implementation)
    ("r" lsp-find-references)
-   ("t" lsp-find-type-definition)
+   ("td" lsp-find-type-definition)
    ("y" helm-lsp-workspace-symbol)
 
    ("a" go-import-add)
    ("e" helm-lsp-diagnostics)
-   ("c" go-coverage)
-   ("ff" gofmt)
+   ("k" my-flycheck-project)
+;;   ("c" go-coverage)
+;;   ("ff" gofmt)
+   ("tt" mygo/test-project)
+   ("tr" mygo/race-test-project)
    ("p" go-set-project)
 
    ("l" mygo/repl-load-current-file)
@@ -98,7 +109,9 @@
    ("Q" gorepl-quit)
    
    ("dd" dap-debug)
-   ("dl" dap-debug-last))
+   ("dl" dap-debug-last)
+   ("db" dap-breakpoint-toggle)
+   )
 
 (defun mygo/bind-go-mode-keys ()
   (interactive)
@@ -112,7 +125,39 @@
 (add-hook 'go-mode-hook 'mygo/bind-go-mode-keys)
 (add-hook 'gorepl-mode-hook 'mygo/bind-go-mode-keys)
 
+(define-key go-mode-map (kbd "C-c C-z") 'mygo/toggle-switch-to-repl)
 (define-key gorepl-mode-map (kbd "C-c C-z") 'mygo/toggle-switch-to-repl)
+
+;; Add flycheck for additional linter
+(flycheck-define-checker go-ci-lint
+  "A Linter as used in the block ci server using  `golangci-lint run"
+  :command ("golangci-lint" "run" "--out-format" "line-number" "--color" "never"
+	    "--config" "/Users/cdorrat/Development/gap/.golangci.yml")
+  :error-patterns
+  (
+   (warning line-start (file-name) ":" line ":"
+          (optional column ":") " "
+          (message (one-or-more not-newline))
+          line-end)
+  )
+  :modes go-mode
+  :predicate (lambda ()
+	       (flycheck-buffer-saved-p)
+               ;; (and (flycheck-buffer-saved-p)
+               ;;      (not (string-suffix-p "_test.go" (buffer-file-name))))
+	       ))
+
+(with-eval-after-load 'flycheck
+   (add-to-list 'flycheck-checkers 'go-ci-lint)
+   (flycheck-add-next-checker 'go-gofmt 'go-ci-lint))
+
+; lsp, if enabled, disables the flycheck checkers by default.
+; Re-add ours in that case.
+(add-hook 'lsp-configure-hook
+      (lambda ()
+        (when (eq major-mode 'go-mode)
+          (flycheck-add-next-checker 'lsp 'go-ci-lint)))
+      100)
 
 
 (provide 'my-go)

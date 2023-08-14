@@ -124,7 +124,7 @@
 			   tide
 			   tramp
 			   web-mode
-			   workgroups
+			   workgroups2
 			   wsd-mode
 			   yaml-mode
 			   ;; added for chat-gpt
@@ -376,8 +376,11 @@
  '(magit-git-executable "/opt/homebrew/bin/git")
  '(org-trello-current-prefix-keybinding "C-c o")
  '(package-selected-packages
-   '(request all-the-icons pretty-hydra use-package helm-lsp protobuf-mode dap-mode gorepl-mode flycheck lsp-mode lsp-ui yasnippet go-mode plantuml-mode org-roam terraform-doc terraform-mode hyperbole  graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag workgroups jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode))
- '(safe-local-variable-values '((cider-preferred-build-tool . "lein"))))
+   '(all-the-icons pretty-hydra use-package git-link ob-mermaid jsonnet-mode workgroups2 helm-lsp protobuf-mode dap-mode gorepl-mode flycheck lsp-mode lsp-ui yasnippet go-mode plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode))
+ '(safe-local-variable-values '((cider-preferred-build-tool . "lein")))
+ '(warning-suppress-log-types '((mail) (mail) (mail) (iedit) (iedit)))
+ '(warning-suppress-types '((mail) (mail) (mail) (iedit) (iedit))))
+
 
 ;; ===================================================================================================
 (require 'multiple-cursors)
@@ -696,19 +699,19 @@ Git gutter:
 
 ;; ===================================================================================================
 ;; support for loading & saving window/buffer config
- (require 'workgroups)
- (setq wg-prefix-key (kbd "C-x w")
-       wg-restore-associated-buffers t ; restore all buffers opened in this WG?
-       wg-use-default-session-file t   ; turn off for "emacs --daemon"
-       wg-default-session-file "~/.emacs_files/workgroups"
-       wg-use-faces nil
-       wg-morph-on nil)
+(setq wg-prefix-key (kbd "C-x w")
+      wg-restore-associated-buffers t ; restore all buffers opened in this WG?
+      wg-use-default-session-file t   ; turn off for "emacs --daemon"
+      wg-default-session-file "~/.emacs_files/workgroups"
+      wg-use-faces nil
+      wg-morph-on nil)
+(require 'workgroups2)
 
 ;; ;; Keyboard shortcuts - load, save, switch
 (global-set-key (kbd "<pause>")     'wg-revert-workgroup)
 (global-set-key (kbd "C-<pause>") 'wg-update-workgroup)
-;; ;(global-set-key (kbd "s-z")         'wg-switch-to-workgroup)
-;; ;(global-set-key (kbd "s-/")         'wg-switch-to-previous-workgroup)
+;; ;; ;(global-set-key (kbd "s-z")         'wg-switch-to-workgroup)
+;; ;; ;(global-set-key (kbd "s-/")         'wg-switch-to-previous-workgroup)
 
 (workgroups-mode 1)     ; Activate workgroups
 (unless (file-directory-p "~/.emacs_files")
@@ -870,10 +873,12 @@ Git gutter:
 
 ;;(require 'my-org-roam)
 
+(setq ob-mermaid-cli-path "/opt/homebrew/bin/mmdc")
 
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((plantuml . t)
+   (mermaid . t)
    (clojure . t)
    (shell . t)
    (sql . t)
