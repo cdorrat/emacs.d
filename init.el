@@ -892,6 +892,9 @@ Git gutter:
   (chatgpt-arcana-replace-region query))
 
 
+(require 'yankpad)
+(setq yankpad-file (concat user-init-dir  "snippets.org"))
+(add-to-list 'company-backends #'company-yankpad)
 
 (require 'pretty-hydra)
 (pretty-hydra-define hydra-coding (:color blue :quit-key "q" :idle 0) ;; :title "Coding Tools"

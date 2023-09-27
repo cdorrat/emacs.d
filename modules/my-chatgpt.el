@@ -32,8 +32,8 @@
 ;; chatgpt setup
 (setq chatgpt-temperature 0.2)
 (setq chatgpt-window-prompt "")
-(setq chatgpt-model "gpt-3.5-turbo") ;; 
-;;(setq chatgpt-model "gpt-4") 
+;;(setq chatgpt-model "gpt-3.5-turbo")
+(setq chatgpt-model "gpt-4") 
 ;;(setq openai--show-log t)
 
 

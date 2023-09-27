@@ -68,7 +68,7 @@
   (if (eq this-command 'eval-expression)
       (paredit-mode 1)))
 
-(add-hook 'minibuffer-setup-hook 'conditionally-enable-paredit-mode)
+;; (add-hook 'minibuffer-setup-hook 'conditionally-enable-paredit-mode)
 
 ;; making paredit work with delete-selection-mode
 (put 'paredit-forward-delete 'delete-selection 'supersede)
