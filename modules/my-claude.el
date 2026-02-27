@@ -235,30 +235,35 @@ named after `my/clorg-worktree-name-at-point'."
    (t nil)))
 
 (defun my/clorg--claude-buffer (name dir)
-  "Return the claude-code buffer for instance NAME in DIR, or nil."
-  (when (and dir name (file-directory-p dir))
-    (let ((buf-name (format "*claude:%s:%s*"
-                            (abbreviate-file-name (file-truename dir))
-                            name)))
-      (get-buffer buf-name))))
+  "Return the claude-code buffer for instance NAME in DIR, or nil.
+Finds the buffer by matching against claude-code's directory comparison logic."
+  (when (and dir name)
+    (let ((target-dir (file-truename (abbreviate-file-name dir))))
+      (cl-find-if
+       (lambda (buf)
+         (and (string-match "^\\*claude:\\([^:]+\\):\\([^*]+\\)\\*$" (buffer-name buf))
+              (string= (match-string 2 (buffer-name buf)) name)
+              (string= (file-truename (match-string 1 (buffer-name buf))) target-dir)))
+       (buffer-list)))))
 
 (defun my/clorg-get-or-create-claude-buffer (name dir)
   "Return the claude-code buffer for instance NAME in DIR, creating it if needed."
-  (or (my/clorg--claude-buffer name dir)
-      (progn
-        ;; Override claude-code--directory to return our working dir (instead of
-        ;; the org file's project root) and the instance name prompt to return
-        ;; our heading name automatically.
-        (let ((default-directory dir))
-          (cl-letf (((symbol-function 'claude-code--prompt-for-instance-name)
-                     (lambda (_dir _existing &optional _force) name))
-                    ((symbol-function 'claude-code--directory)
-                     (lambda () dir)))
-	    (when (my/clorg--should-use-worktree)
-	      (my/clorg-maybe-create-worktree))
-            (claude-code--start nil nil t)))
-        (or (my/clorg--claude-buffer name dir)
-            (user-error "Failed to create claude-code instance")))))
+  (let ((dir (file-name-as-directory (expand-file-name dir))))
+    (or (my/clorg--claude-buffer name dir)
+        (progn
+          (when (my/clorg--should-use-worktree)
+            (my/clorg-maybe-create-worktree))
+          ;; Override claude-code--directory to return our working dir (instead of
+          ;; the org file's project root) and the instance name prompt to return
+          ;; our heading name automatically.
+          (let ((default-directory dir))
+            (cl-letf (((symbol-function 'claude-code--prompt-for-instance-name)
+                       (lambda (_dir _existing &optional _force) name))
+                      ((symbol-function 'claude-code--directory)
+                       (lambda () dir)))
+              (claude-code--start nil nil t)))
+          (or (my/clorg--claude-buffer name dir)
+              (user-error "Failed to create claude-code instance"))))))
 
 (defun my/clorg-get-claude-buffer ()
   "Return the claude-code buffer for the current org heading, creating it if needed.
