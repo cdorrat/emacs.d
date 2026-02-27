@@ -1,5 +1,5 @@
 (require 'chatgpt-arcana)
-(require 'chatgpt)
+(use-package chatgpt :ensure t)
 
 
 ;; clone https://github.com/cdorrat/chatgpt-arcana.el.git in the modules dir

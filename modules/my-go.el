@@ -11,7 +11,8 @@
 ;; Go - lsp-mode
 (require 'go-mode)
 (require 'gorepl-mode)
-(require 'dap-dlv-go)
+;;(require 'dap-dlv-go)
+(setq lsp-go-gopls-server-path "/Users/cdorrat/Development/gap/.hermit/go/bin/gopls")
 
 ;; Set up before-save hooks to format buffer and add/delete imports.
 (defun lsp-go-install-save-hooks ()

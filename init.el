@@ -1,4 +1,4 @@
-;; (set-face-attribute 'default nil :height 120)
+; (set-face-attribute 'default nil :height 120)
 ;; "Essential PragmataPro" -> default face?
 ;; "Droid Sans Mono"
 (custom-set-faces
@@ -128,6 +128,7 @@
 			   wsd-mode
 			   yaml-mode
 			   ;; added for chat-gpt
+			   ;; chat-gpt
 			   use-package
 			   pretty-hydra
 			   all-the-icons
@@ -215,6 +216,8 @@
 (require 'setup-paredit)
 ;; (require 'paredit-menu)
 
+(require 'my-claude)
+(global-set-key (kbd "<f12> c") 'my/claude-hydra/body)
 ;; ===================================================================================================
 ;; setup org-mode
 (require 'ob)
@@ -374,9 +377,13 @@
  '(magit-bury-buffer-function 'magit-mode-quit-window)
  '(magit-dispatch-arguments nil)
  '(magit-git-executable "/opt/homebrew/bin/git")
+ '(org-fold-core-style 'overlays)
  '(org-trello-current-prefix-keybinding "C-c o")
- '(package-selected-packages
-   '(all-the-icons pretty-hydra use-package git-link ob-mermaid jsonnet-mode workgroups2 helm-lsp protobuf-mode dap-mode gorepl-mode flycheck lsp-mode lsp-ui yasnippet go-mode plantuml-mode org-roam terraform-doc terraform-mode hyperbole company-anaconda anaconda-mode graphql-mode web-mode ts-comint repl-toggle tide indium cider-hydra clj-refactor graphviz-dot-mode haskell-mode minizinc-mode jedi jedi-core py-autopep8 py-yapf elpy clojure-mode less-css-mode arduino-mode dash-at-point cider org-bullets swift-mode flycheck-swift yaml-mode wsd-mode paredit-menu itail iedit helm-ag multiple-cursors markdown-mode key-chord hydra helm-projectile ag jump-char git-gutter-fringe git-commit fixmee fiplr ess command-log-mode))
+ '(package-selected-packages '(monet))
+ '(package-vc-selected-packages
+   '((monet :url "https://github.com/stevemolitor/monet")
+     (claude-code :url
+		  "https://github.com/stevemolitor/claude-code.el")))
  '(safe-local-variable-values '((cider-preferred-build-tool . "lein")))
  '(warning-suppress-log-types '((mail) (mail) (mail) (iedit) (iedit)))
  '(warning-suppress-types '((mail) (mail) (mail) (iedit) (iedit))))
@@ -934,15 +941,15 @@ Git gutter:
 
 (global-set-key (kbd "C-=") 'hydra-coding/body)
 
-```
-(defun download-and-parse-json (url username password)
-  (with-current-buffer (url-retrieve-synchronously url)
-    (goto-char (point-min))
-    (when (looking-at "HTTP/[0-9].[0-9] +401")
-      (let ((auth (format "Basic %s\n" (base64-encode-string (concat username ":" password))))) 
-          (url-insert (encode-coding-string auth 'iso-8859-1))
-          (url-retrieve-synchronously url)
-          (goto-char (point-min))))
-    (re-search-forward "^$" nil 'move)
-    (json-read)))
-```
+
+;; (defun download-and-parse-json (url username password)
+;;   (with-current-buffer (url-retrieve-synchronously url)
+;;     (goto-char (point-min))
+;;     (when (looking-at "HTTP/[0-9].[0-9] +401")
+;;       (let ((auth (format "Basic %s\n" (base64-encode-string (concat username ":" password))))) 
+;;           (url-insert (encode-coding-string auth 'iso-8859-1))
+;;           (url-retrieve-synchronously url)
+;;           (goto-char (point-min))))
+;;     (re-search-forward "^$" nil 'move)
+;;     (json-read)))
+
