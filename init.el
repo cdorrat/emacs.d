@@ -1,4 +1,4 @@
-; (set-face-attribute 'default nil :height 120)
+					; (set-face-attribute 'default nil :height 120)
 ;; "Essential PragmataPro" -> default face?
 ;; "Droid Sans Mono"
 (custom-set-faces
@@ -203,12 +203,17 @@
   (global-set-key [end] (quote end-of-line))
   (global-set-key [C-help] (quote kill-ring-save))
   (global-set-key [S-help] (quote yank))
+
+
+  ;; shift between tabs with pause/break
+  (global-set-key [M-f15] (quote tab-new))
+  (global-set-key [f15] (quote tab-recent))
+  (global-set-key [S-f15] (quote tab-close))
   
-  (global-set-key [M-f15] (quote wg-update-workgroup))
-  (global-set-key [f15] (quote wg-revert-workgroup))
+  (global-set-key (kbd "C-x M-f") (quote helm-projectile-find-file))
    
-  (require 'dash-at-point)
-  (global-set-key (kbd "<f12> s") 'dash-at-point)
+  ;; (require 'dash-at-point)
+  ;; (global-set-key (kbd "<f12> s") 'dash-at-point)
   )
 ;; =================================================================================================== 
 ;; Configure clojure
@@ -217,7 +222,7 @@
 ;; (require 'paredit-menu)
 
 (require 'my-claude)
-(global-set-key (kbd "<f12> c") 'my/claude-hydra/body)
+(global-set-key (kbd "<f12>") 'my/claude-hydra/body)
 ;; ===================================================================================================
 ;; setup org-mode
 (require 'ob)
@@ -734,6 +739,8 @@ Git gutter:
      ;; (add-hook 'ediff-suspend-hook 'ediff-toggle-wide-display)
      ))
 
+;; support for emacsclient
+(server-start)
 
 (require 'string-inflection)
 (global-unset-key (kbd "C-q"))

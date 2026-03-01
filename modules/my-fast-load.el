@@ -9,6 +9,7 @@ Key is a short abbrev, Value is file path.")
         ("todo" . "~/todo.txt" )
         ("init" . "~/.emacs.d/init.el" )
 	("lein" . "~/.lein/profiles.clj")
+	("prompt" . "~/prompts.org")	
 	("weather-todo" . "~/src/clojure/weather-server/todo.org")
         ))
 
