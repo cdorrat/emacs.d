@@ -174,7 +174,7 @@ named after `claude-org-worktree-name-at-point'."
 - Otherwise: nil."
   (cond
    ;; List item
-   ((org-in-item-p)
+   ((org-at-item-p)
     (string-trim
      (save-excursion
        (beginning-of-line)

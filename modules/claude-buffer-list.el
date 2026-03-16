@@ -207,8 +207,14 @@ Otherwise, open it in another window so the sessions list stays visible."
   (let ((buf-name (claude-buffer-list--buffer-name-at-point)))
     (if (and buf-name (get-buffer buf-name))
         (when (yes-or-no-p (format "Kill session %s? " buf-name))
-          (kill-buffer buf-name)
-          (claude-buffer-list-refresh))
+          (let ((buf (get-buffer buf-name)))
+            ;; Suppress the "process running, kill anyway?" prompt
+            (when-let ((proc (get-buffer-process buf)))
+              (set-process-query-on-exit-flag proc nil))
+            (kill-buffer buf))
+          (claude-buffer-list-refresh)
+          (goto-char (point-min))
+          (forward-line 2))
       (message "No session on this line"))))
 
 (defun claude-buffer-list-helm ()
