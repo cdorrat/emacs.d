@@ -248,10 +248,21 @@ With prefix ARG, switch to the Claude buffer after sending."
             (pop-to-buffer buf)
           (display-buffer buf))))))
 
-(defun claude-org-open-magit ()
-  "Open magit-status in the directory returned by `claude-org-get-working-dir'."
+(defun claude-org-magit-status ()
+  "Open magit-status for the current org heading context.
+When worktrees are enabled, use the worktree directory.
+When a :WORKING_DIRECTORY: property exists, use that.
+Otherwise call magit-status with no directory argument."
   (interactive)
-  (magit-status (claude-org-get-working-dir)))
+  (cond
+   ((claude-org--should-use-worktree)
+    (claude-org-maybe-create-worktree)
+    (magit-status (claude-org-worktree-dir-name)))
+   ((ignore-errors (claude-org--get-working-dir-property))
+    (magit-status (claude-org--get-working-dir-property)))
+   (t
+    (magit-status))))
+
 
 ;; ---------------------------------------------------------------------------------------------------
 ;; support for showing claude actions in a buffer

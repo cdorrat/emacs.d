@@ -1,4 +1,4 @@
-					; (set-face-attribute 'default nil :height 120)
+				; (set-face-attribute 'default nil :height 120)
 ;; "Essential PragmataPro" -> default face?
 ;; "Droid Sans Mono"
 (custom-set-faces
@@ -18,6 +18,9 @@
 (put 'upcase-region 'disabled nil)
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
+;; Use Emacs minibuffer for passphrase
+(setq epa-pinentry-mode 'loopback)
+(setq auth-sources '("~/.authinfo.gpg"))
 ;; (setq visible-bell 1)
 ;; (setq ring-bell-function 'ignore)
 
@@ -62,100 +65,77 @@
    auto-mode-alist))
 
 
-(defvar cdorrat/packages '(
-			   go-mode
-			   ;;gorepl-mode
-			   ;;yasnippet
-			   ;;lsp-mode
-			   ;;lsp-ui
-			   helm-lsp
-			   ag
-			   avy
-			   clj-refactor
-			   cider-hydra
-			   command-log-mode
-			   company
-			   dash-at-point
-			   elpy
-			   ;;ensime
-			   exec-path-from-shell
-			   flycheck
-			   haskell-mode
-			   jedi
-			   jq-mode
-			   py-autopep8
-			   py-yapf
-			   helm-projectile
-			   hydra
-			   hyperbole
-			   key-chord
-			   magit
-			   magit-gh-pulls
-			   markdown-mode
-			   multiple-cursors
-			   org-bullets
-				org-roam
-				;;				org-trello
-				pretty-hydra
-			   projectile
-			   cider
-			   dash
-			   dockerfile-mode
-			   ess
-			   fiplr
-			   fixmee
-			   git-gutter-fringe
-			   helm-ag
-			   iedit
-			   itail
-			   indium
-			   jump-char			   
-			   nxml
-			   restclient
-			   restclient-helm
-			   package
-			   paredit
-			   paredit-menu
-			   protobuf-mode
-			   repl-toggle
-			   s
-			   sass-mode
-			   string-inflection
-			   tide
-			   tramp
-			   web-mode
-			   workgroups2
-			   wsd-mode
-			   yaml-mode
-			   ;; added for chat-gpt
-			   ;; chat-gpt
-			   use-package
-			   pretty-hydra
-			   all-the-icons
-			   )
-)
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives '( "jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/") t)
-
-;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-;;(add-to-list 'package-pinned-packages '(ensime . "melpa-stable") t)
-;; (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
-;; (add-to-list 'package-pinned-packages '(clojure-mode . "melpa-stable") t)
+(add-to-list 'package-archives '("jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/") t)
 (package-initialize)
 
-(defun cdorrat/packages-installed-p ()
-  (cl-loop for pkg in cdorrat/packages
-        when (not (package-installed-p pkg)) do (cl-return nil)
-        finally (cl-return t)))
-
-(unless (cdorrat/packages-installed-p)
-  (message "%s" "Refreshing package database...")
+;; Bootstrap use-package
+(unless (package-installed-p 'use-package)
   (package-refresh-contents)
-  (dolist (pkg cdorrat/packages)
-    (when (not (package-installed-p pkg))
-      (package-install pkg))))
+  (package-install 'use-package))
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+(use-package go-mode)
+(use-package helm-lsp)
+(use-package ag)
+(use-package avy)
+(use-package clj-refactor)
+(use-package cider-hydra)
+(use-package command-log-mode)
+(use-package company)
+(use-package dash-at-point)
+(use-package elpy)
+(use-package exec-path-from-shell)
+(use-package flycheck)
+(use-package haskell-mode)
+(use-package jedi)
+(use-package jq-mode)
+(use-package py-autopep8)
+(use-package py-yapf)
+(use-package helm-projectile)
+(use-package hydra)
+(use-package hyperbole)
+(use-package key-chord)
+
+
+(use-package magit :ensure t)
+
+(use-package markdown-mode)
+(use-package multiple-cursors)
+(use-package org-bullets)
+(use-package org-roam)
+(use-package pretty-hydra)
+(use-package projectile)
+(use-package cider)
+(use-package dash)
+(use-package dockerfile-mode)
+(use-package ess)
+(use-package fiplr)
+(use-package fixmee)
+(use-package git-gutter-fringe)
+(use-package helm-ag)
+(use-package iedit)
+(use-package itail)
+(use-package indium)
+(use-package jump-char)
+(use-package restclient)
+(use-package restclient-helm)
+(use-package paredit)
+(use-package paredit-menu)
+(use-package protobuf-mode)
+(use-package repl-toggle)
+(use-package s)
+(use-package sass-mode)
+(use-package string-inflection)
+(use-package tide)
+(use-package web-mode)
+(use-package workgroups2)
+(use-package wsd-mode)
+(use-package yaml-mode)
+(use-package all-the-icons)
 
 (defconst user-init-dir
   (cond ((boundp 'dotfiles-dir) dotfiles-dir) 
@@ -288,6 +268,7 @@
 	  #'(lambda ()
 	     (define-key eshell-mode-map [C-up] 'eshell-previous-matching-input-from-input)))
 
+
 ;;===================================================================================================
 ;; yasnippet setup
 ;; (require 'yasnippet)
@@ -366,9 +347,9 @@
 
 
 ;; ===================================================================================================
-(require 'anki)
+;;(require 'anki)
 
-(global-set-key (kbd "<f12> a") 'anki-add-fact) 
+;;(global-set-key (kbd "<f12> a") 'anki-add-fact) 
 
 (require 'itail)
 (custom-set-variables
@@ -384,7 +365,23 @@
  '(magit-git-executable "/opt/homebrew/bin/git")
  '(org-fold-core-style 'overlays)
  '(org-trello-current-prefix-keybinding "C-c o")
- '(package-selected-packages '(monet))
+ '(package-selected-packages
+   '(ace-jump-mode ag all-the-icons bind-key browse-at-remote cider-hydra
+		   claude-code clj-refactor clomacs command-log-mode
+		   company-anaconda dap-mode dash-at-point direx
+		   dockerfile-mode eat elpy ess exec-path-from-shell
+		   fiplr fixmee forge git-commit git-gutter-fringe
+		   git-link go-dlv gorepl-mode haskell-mode helm-ag
+		   helm-flycheck helm-lsp helm-projectile hyperbole
+		   iedit indium itail jedi jq-mode jsonnet-mode
+		   jump-char key-chord kotlin-mode lsp-ui magit
+		   magit-section mermaid-mode monet ob-mermaid
+		   org-bullets org-roam org-trello paredit-menu
+		   pkg-info pretty-hydra protobuf-mode py-autopep8
+		   py-yapf repl-toggle restclient-helm sass-mode
+		   string-inflection terraform-mode tide transient
+		   typescript-mode ucs-utils vterm web-mode
+		   workgroups2 wsd-mode yaml-mode))
  '(package-vc-selected-packages
    '((monet :url "https://github.com/stevemolitor/monet")
      (claude-code :url
@@ -799,10 +796,6 @@ Git gutter:
 ;;
 
 
-;; disable gh pull support for the moment
-;;(require 'magit-gh-pulls)
-;; (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
-
 
 (global-set-key (kbd "C-S-k") 'fixup-whitespace)
 
@@ -902,8 +895,8 @@ Git gutter:
 (require 'protobuf-mode)
 (require 'my-go)
 
-(add-to-list 'load-path (concat modules-path "chatgpt-arcana.el"))
-(require 'my-chatgpt)
+;(add-to-list 'load-path (concat modules-path "chatgpt-arcana.el"))
+;(require 'my-chatgpt)
 
 (defun gpt-code-replace-region (beg end query)
   (interactive "r\nsPrompt: ")
@@ -938,16 +931,18 @@ Git gutter:
     ("d" dash-at-point "Dash")
     ("mb" magit-blame "Magit blame")
     ("ml" magit-log-buffer-file "Magit changes log"))
-   "AI"
-   (("gg" chatgpt "ChatGpt buffer")
-    ("gc" chatgpt-arcana-start-chat "Start chat")
-    ("gi" chatgpt-arcana-insert-at-point "Insert at point")
-    ("gr" chatgpt-arcana-replace-region "Replace region") ;; 
-    ("gm" chatgpt-arcana-hydra/body "ChatGpt"))
+   ;; "AI"
+   ;; (
+   ;;  ("gg" chatgpt "ChatGpt buffer")
+   ;;  ("gc" chatgpt-arcana-start-chat "Start chat")
+   ;;  ("gi" chatgpt-arcana-insert-at-point "Insert at point")
+   ;;  ("gr" chatgpt-arcana-replace-region "Replace region") ;; 
+   ;;  ("gm" chatgpt-arcana-hydra/body "ChatGpt")
+   ;;  )
    ))
 
 (global-set-key (kbd "C-=") 'hydra-coding/body)
-
+(define-key minibuffer-local-map (kbd "RET") #'exit-minibuffer)
 
 ;; (defun download-and-parse-json (url username password)
 ;;   (with-current-buffer (url-retrieve-synchronously url)

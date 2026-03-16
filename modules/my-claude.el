@@ -81,11 +81,11 @@
     ("l" claude-buffer-list "list sessions"))
    "Org"
    (("/" claude-org-send-to-claude "send at point")
-    ("." claude-org-open-magit "magit at point")
+    ("<f9>" claude-org-magit-status "magit at point")
     )
    ))
 
 (define-key org-mode-map (kbd "C-/") #'claude-org-send-to-claude)
-(define-key org-mode-map (kbd "C-.") #'claude-org-open-magit)
+(define-key org-mode-map (kbd "<f9>") #'claude-org-magit-status)
 
 (provide 'my-claude)
