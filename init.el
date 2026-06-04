@@ -919,7 +919,8 @@ Git gutter:
    (("a"   helm-ag-project-root "ag prj")
     ("A"   helm-ag-this-file "ag file")
     ("s"   projectile-multi-occur "occur")
-    ("S"   projectile-replace "replace"))
+    ("S"   projectile-replace "replace")
+    ("R"   lsp-find-references "references"))
    "Buffer"
    (("b"  projectile-switch-to-buffer "buffer")
     ("y"   helm-show-kill-ring "kill ring")
