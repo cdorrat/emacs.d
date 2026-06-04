@@ -42,8 +42,8 @@
 
 (setup-claude-auto-revert)
 
-(add-hook 'claude-code-process-environment-functions #'monet-start-server-function)
-(monet-mode 1)
+;; (add-hook 'claude-code-process-environment-functions #'monet-start-server-function)
+;; (monet-mode 1)
 
 ;; Load org-mode integration for managing Claude instances from org documents
 (require 'claude-org)
@@ -87,5 +87,6 @@
 
 (define-key org-mode-map (kbd "C-/") #'claude-org-send-to-claude)
 (define-key org-mode-map (kbd "<f9>") #'claude-org-magit-status)
+(setq claude-org-worktree-dir "/Users/cdorrat/Development/worktrees")
 
 (provide 'my-claude)

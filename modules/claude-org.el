@@ -157,12 +157,18 @@ named after `claude-org-worktree-name-at-point'."
         (make-directory parent t)
         (let ((default-directory repo)
               (err-buf (generate-new-buffer " *claude-org-git-worktree*")))
-          (message "claude-org: running `git -C %s worktree add -b %s %s'" repo branch wt-dir)
           (unwind-protect
-              (unless (zerop (call-process "git" nil err-buf nil
-                                           "worktree" "add" "-b" branch wt-dir))
-                (error "Failed to create git worktree at %s: %s"
-                       wt-dir (string-trim (with-current-buffer err-buf (buffer-string)))))
+              (progn
+                (message "claude-org: running `git -C %s worktree add -b %s %s'" repo branch wt-dir)
+                (unless (zerop (call-process "git" nil err-buf nil
+                                             "worktree" "add" "-b" branch wt-dir))
+                  ;; Branch already exists from a previous session; reuse it
+                  (with-current-buffer err-buf (erase-buffer))
+                  (message "claude-org: branch exists, running `git -C %s worktree add %s %s'" repo wt-dir branch)
+                  (unless (zerop (call-process "git" nil err-buf nil
+                                               "worktree" "add" wt-dir branch))
+                    (error "Failed to create git worktree at %s: %s"
+                           wt-dir (string-trim (with-current-buffer err-buf (buffer-string)))))))
             (kill-buffer err-buf)))))))
 
 (defun claude-org-get-current-prompt ()
